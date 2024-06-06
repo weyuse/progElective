@@ -87,24 +87,6 @@ public class BaseAI
         yield return Ship.__FireFront(power);
     }
 
-    /// <summary>
-    /// Fire from the left pointing cannon
-    /// </summary>
-    /// <param name="power">???</param>
-    /// <returns></returns>
-    public IEnumerator FireLeft(float power) {
-        yield return Ship.__FireLeft(power);
-    }
-
-    /// <summary>
-    /// fire from the right pointing cannon
-    /// </summary>
-    /// <param name="power">???</param>
-    /// <returns></returns>
-    public IEnumerator FireRight(float power) {
-        yield return Ship.__FireRight(power);
-    }
-
     public virtual IEnumerator RunAI() {
         yield return null;
     }

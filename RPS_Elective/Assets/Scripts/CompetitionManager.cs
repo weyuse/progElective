@@ -24,13 +24,11 @@ public class CompetitionManager : MonoBehaviour
     void Start()
     {
         BaseAI[] aiArray = new BaseAI[] {
-            new IljaAI(), 
             new PondAI(), 
-            new PondAI(), 
-            new PondAI()
+            
         };
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             GameObject pirateShip = Instantiate(PirateShipPrefab, SpawnPoints[i].position, SpawnPoints[i].rotation);
             PirateShipController pirateShipController = pirateShip.GetComponent<PirateShipController>();
@@ -39,11 +37,6 @@ public class CompetitionManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Start Battle obviously should be called only once.
-    /// Otherwise the ships will run multiple coroutines that manage their AI
-    /// <seealso cref="PirateShipController"/>
-    /// </summary>
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) {

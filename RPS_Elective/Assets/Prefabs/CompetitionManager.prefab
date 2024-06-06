@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d738c66033dc54bfcae667ec6b77834f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PirateShipPrefab: {fileID: 7222537879436563100, guid: 94110ca0e17004efabeabf32fc70e56d,
+  PirateShipPrefab: {fileID: 5788443842800091036, guid: 9256e5547e54b9d43b883f2afd29ec86,
     type: 3}
   SpawnPoints:
   - {fileID: 8771772981144662787}
