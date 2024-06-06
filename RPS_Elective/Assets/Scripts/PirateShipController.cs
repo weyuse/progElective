@@ -6,8 +6,9 @@ using UnityEngine;
 
 public class PirateShipController : MonoBehaviour
 {
-    // new melee range area
-    public Transform CannonFrontSpawnPoint = null;
+    // spell spawn area
+    public Transform ProjectileFrontSpawnPoint = null;
+    public GameObject magicSpellPrefab = null;
 
     // the 'scanner' that allows the ship to 'see' its surroundings
     public GameObject Lookout = null;
@@ -17,9 +18,13 @@ public class PirateShipController : MonoBehaviour
     private BaseAI ai = null;
 
     // create a level playing field. Every ship has the same basic abilities
-    private float BoatSpeed = 100.0f;
-    private float SeaSize = 500.0f;
+    private float WizSpeed = 100.0f;
+    private float ArenaSize = 500.0f;
     private float RotationSpeed = 180.0f;
+
+    //health and damage for winning competition purposes
+    private int health = 100;
+    private int damage = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -48,8 +53,10 @@ public class PirateShipController : MonoBehaviour
 
     // If a ship is inside the 'scanner', its information (distance and name) will be sent to the AI
 
-    void OnTriggerStay(Collider other) {
-        if (other.tag == "Boat") {
+    void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Boat")
+        {
             ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent();
             scannedRobotEvent.Distance = Vector3.Distance(transform.position, other.transform.position);
             scannedRobotEvent.Name = other.name;
@@ -57,33 +64,50 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
-    // Move this ship ahead by the given distance
- 
+  
+    public void hit(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            Debug.Log("wizard dead");
+            killWiz();            
+        }
+    }
+
+    private void killWiz()
+    {
+        Destroy(gameObject, 2.0f);
+    }
+    
+
+    // Move ahead by the given distance
+
     public IEnumerator __Ahead(float distance) {
-        int numFrames = (int)(distance / (BoatSpeed * Time.fixedDeltaTime));
+        int numFrames = (int)(distance / (WizSpeed * Time.fixedDeltaTime));
         for (int f = 0; f < numFrames; f++) {
-            transform.Translate(new Vector3(0f, 0f, BoatSpeed * Time.fixedDeltaTime), Space.Self);
-            Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(SeaSize, 0, SeaSize)), new Vector3(-SeaSize, 0, -SeaSize));
+            transform.Translate(new Vector3(0f, 0f, WizSpeed * Time.fixedDeltaTime), Space.Self);
+            Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(ArenaSize, 0, ArenaSize)), new Vector3(-ArenaSize, 0, -ArenaSize));
             transform.position = clampedPosition;
 
             yield return new WaitForFixedUpdate();            
         }
     }
 
-    // Move the ship backwards by the given distance
+    // Move backwards by the given distance
 
     public IEnumerator __Back(float distance) {
-        int numFrames = (int)(distance / (BoatSpeed * Time.fixedDeltaTime));
+        int numFrames = (int)(distance / (WizSpeed * Time.fixedDeltaTime));
         for (int f = 0; f < numFrames; f++) {
-            transform.Translate(new Vector3(0f, 0f, -BoatSpeed * Time.fixedDeltaTime), Space.Self);
-            Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(SeaSize, 0, SeaSize)), new Vector3(-SeaSize, 0, -SeaSize));
+            transform.Translate(new Vector3(0f, 0f, -WizSpeed * Time.fixedDeltaTime), Space.Self);
+            Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(ArenaSize, 0, ArenaSize)), new Vector3(-ArenaSize, 0, -ArenaSize));
             transform.position = clampedPosition;
 
             yield return new WaitForFixedUpdate();            
         }
     }
 
-    // Turns the ship left by the given angle
+    // Turns left by the given angle
     
     public IEnumerator __TurnLeft(float angle) {
         int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
@@ -94,7 +118,7 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
-    // Turns the ship right by the given angle
+    // Turns right by the given angle
 
     public IEnumerator __TurnRight(float angle) {
         int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
@@ -111,10 +135,10 @@ public class PirateShipController : MonoBehaviour
         yield return new WaitForFixedUpdate();
     }
 
-    // Fire from the forward pointing cannon
+    // Fire front
   
     public IEnumerator __FireFront(float power) {
-        //GameObject newInstance = Instantiate(CannonBallPrefab, CannonFrontSpawnPoint.position, CannonFrontSpawnPoint.rotation);
+       GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         yield return new WaitForFixedUpdate();
     }
   

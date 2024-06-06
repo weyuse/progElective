@@ -3,7 +3,6 @@
 /// <summary>
 /// The projectile that is fired.
 /// Currently never leaves the scene once added
-/// </summary>
 public class CannonBall : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -11,10 +10,8 @@ public class CannonBall : MonoBehaviour
     {
         
     }
-
-    /// <summary>
-    /// Makes the bullet fly
-    /// </summary>
+    // Makes the bullet fly
+    
     void FixedUpdate()
     {
         transform.Translate(new Vector3(0f, 0f, 500 * Time.fixedDeltaTime), Space.Self);

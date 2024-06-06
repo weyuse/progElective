@@ -3,7 +3,9 @@ guid: d738c66033dc54bfcae667ec6b77834f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - PirateShipPrefab: {fileID: 5382892350593215331, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -17,15 +17,17 @@ public class CompetitionManager : MonoBehaviour
     // the list that keeps track of all the participants
     private List<PirateShipController> pirateShips = new List<PirateShipController>();
 
-    /// <summary>
+  
     /// creates the 4 ships that will do battle
     /// 4 ship prefabs will be instantated and each will be assigned an AI derived from BaseAI
-    /// </summary>
+  
     void Start()
     {
         BaseAI[] aiArray = new BaseAI[] {
-            new PondAI(), 
-            
+            new PondAI(),
+            new PondAI(),
+            new PondAI()
+
         };
 
         for (int i = 0; i < 3; i++)
