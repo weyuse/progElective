@@ -2036,6 +2036,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ProjectileFrontSpawnPoint: {fileID: 7081216380134432434}
+  magicSpellPrefab: {fileID: 2501402490172963987, guid: 6cf9d983923f144efbcd7c98b8ec1870,
+    type: 3}
   Lookout: {fileID: 7912336388467731914}
 --- !u!1 &5382896703395356749
 GameObject:

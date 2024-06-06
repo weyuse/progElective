@@ -11,7 +11,9 @@ public class PondAI : BaseAI
         while (true)
         {
             yield return Ahead(500);
+            yield return FireFront(1);
             yield return TurnRight(180);
+            
         }
     }
 

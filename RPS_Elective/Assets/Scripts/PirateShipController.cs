@@ -144,12 +144,20 @@ public class PirateShipController : MonoBehaviour
     }
 
     // Fire front
-  
-    public IEnumerator __FireFront(float power) {
-       GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
+
+    public IEnumerator __FireFront(float power)
+    {
+        GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         yield return new WaitForFixedUpdate();
+
+        SpellProjectile spellProjectile = newInstance.GetComponent<SpellProjectile>();
+
+        if (spellProjectile != null)
+        {
+            spellProjectile.SetColor(currentMagicType); // Set the color based on the current magic type
+        }
     }
-  
+
 
     // Turn the sensor to the left by the given angle
 
