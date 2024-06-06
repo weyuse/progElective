@@ -26,10 +26,18 @@ public class PirateShipController : MonoBehaviour
     private int health = 100;
     private int damage = 10;
 
+    //magic types
+    private string[] magicTypes = { "Fire", "Water", "Leaf" };
+
+    //current magic type
+    private string currentMagicType;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        //random magic type assigned at the start
+        currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
     }
 
     // Assigns the AI that steers this instance

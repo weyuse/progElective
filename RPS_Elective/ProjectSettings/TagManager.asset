@@ -6,7 +6,7 @@ TagManager:
   tags:
   - Trigger
   - Boat
-  - backTrigger
+  - magicMushroom
   layers:
   - Default
   - TransparentFX
