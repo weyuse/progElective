@@ -4,8 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - PirateShipPrefab: {fileID: 5382892350593215331, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
-      type: 3}
+  - PirateShipPrefab: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

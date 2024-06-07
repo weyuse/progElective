@@ -84,6 +84,7 @@ public class PirateShipController : MonoBehaviour
             ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent();
             scannedRobotEvent.Distance = Vector3.Distance(transform.position, other.transform.position);
             scannedRobotEvent.Name = other.name;
+            Debug.Log(other.name);
             //find the others position and magic type
             scannedRobotEvent.Position = other.transform.position;
             scannedRobotEvent.MagicType = other.GetComponent<PirateShipController>().GetCurrentMagicType();
@@ -133,16 +134,6 @@ public class PirateShipController : MonoBehaviour
         return health;
     }
 
-
-    //moving the wizard so long as it has a target to move to 
-    private void setDestination()
-    {
-        if (targetDestination != null)
-        {
-            Vector3 targetVector = targetDestination.transform.position;
-            wizardMover.SetDestination(targetVector);
-        }
-    }
 
     // Move ahead by the given distance
 
@@ -237,6 +228,56 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
-    
+    // Flee method to move the ship away from the enemy
+
+    public IEnumerator __Flee()
+    {
+        // find the corners and put them into an array
+        GameObject[] respawnPoint = GameObject.FindGameObjectsWithTag("Respawn");
+        if (respawnPoint.Length > 0)
+        {
+            GameObject randomRespawnPoint = respawnPoint[Random.Range(0, respawnPoint.Length)];
+            // Set the target destination to a random point in the array
+            setDestination(randomRespawnPoint.transform.position);
+        }
+
+        yield return new WaitForFixedUpdate(); 
+    }
+
+    //moving the wizard so long as it has a target to move to 
+    private void setDestination(Vector3 destination)
+    {
+        if (wizardMover != null)
+        {
+            wizardMover.SetDestination(destination);
+        }
+    }
+
+    public IEnumerator __Engage(float angle)
+    {
+       
+            int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
+            for (int f = 0; f < numFrames; f++)
+            {
+                Lookout.transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
+
+                yield return new WaitForFixedUpdate();
+            }
+       
+    }
+
+    public IEnumerator __GetMushroom()
+    {
+            // find the mushrooms and put them into an array
+            GameObject[] mushroomPoint = GameObject.FindGameObjectsWithTag("magicMushroom");
+            if (mushroomPoint.Length > 0)
+            {
+                GameObject randomMushroomPoint = mushroomPoint[Random.Range(0, mushroomPoint.Length)];
+                // Set the target destination to a random point in the array
+                setDestination(randomMushroomPoint.transform.position);
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
 
 }

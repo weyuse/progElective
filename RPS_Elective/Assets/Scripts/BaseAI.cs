@@ -68,6 +68,24 @@ public class ScannedRobotEvent {
         yield return Ship.__FireFront(power);
     }
 
+    // the flee command
+
+    public IEnumerator Flee()
+    {
+        yield return Ship.__Flee();
+    }
+
+    public IEnumerator Engage(float angle)
+    {
+        yield return Ship.__Engage(angle);
+    }
+
+    public IEnumerator GetMushroom()
+    {
+        yield return Ship.__GetMushroom();
+    }
+
+
     public virtual IEnumerator RunAI() {
         yield return null;
     }

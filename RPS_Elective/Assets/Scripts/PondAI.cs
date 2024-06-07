@@ -10,20 +10,49 @@ public class PondAI : BaseAI
 
     private float healthThresholdLow = 30;
     private float healthThresholdMedium = 60;
+    private string action;
 
     public override IEnumerator RunAI() {
         while (true)
         {
-            //generic look left and right for enemies before combat starts
-            yield return TurnRight(90);
-            yield return TurnLeft(180);
-            yield return TurnRight(90);
-            yield return Ahead(200);
-            
-        }
-    } 
+            if (action == "engage")
+            {
+                yield return Engage(2);
+                yield return FireFront(1);
 
- 
+            }
+            else if (action == "flee")
+            {
+                yield return Flee();
+  
+            }
+            else if(action == "findMushroom")
+            {
+                yield return GetMushroom();
+            }
+            else
+            {
+                //generic patrol
+                yield return TurnRight(90);
+                yield return TurnLeft(180);
+                yield return TurnRight(90);
+                yield return Ahead(200);
+            }
+        } 
+    }
+
+    /*public override IEnumerator Flee()
+    {
+        while (true)
+        {
+            //flee
+            yield return Flee(20);
+
+        }
+    }
+    */
+
+
     public override void OnScannedRobot(ScannedRobotEvent e)
     {
         //what are the factors that influence my decision
@@ -33,20 +62,22 @@ public class PondAI : BaseAI
 
         //what am I gonnna do
         string action = DetermineAction(health, myMagicType, enemyMagicType);
-
+        
         if (action == "engage")
         {
-            EngageEnemy(e);
+           // Ship.StartCoroutine(Flee(300));
         }
         else if (action == "flee")
         {
-            FleeEnemy(e);
+            Debug.Log("Get outta there kid!");
+
+            //Ship.StartCoroutine(Flee(300));
         }
         else if (action == "findMushroom")
         {
-            FindMushroom(e);
+           // Ship.StartCoroutine(Flee(300));
         }
-
+        
         Debug.Log(action);
     }
 
@@ -98,22 +129,6 @@ public class PondAI : BaseAI
             }
         }
     }
-                
-        private void EngageEnemy(ScannedRobotEvent e)
-        {
-            Debug.Log("We Shootin fr");
-            //temp
-        }
 
-       private void FleeEnemy(ScannedRobotEvent e)
-        {
-            Debug.Log("Get outta there kid!");
-            
-        }
-
-        private void FindMushroom(ScannedRobotEvent e)
-        {
-            Debug.Log("Gotta switch it up");
-            
-        }
-    }
+    
+}

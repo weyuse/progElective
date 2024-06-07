@@ -7,10 +7,10 @@ public class MushroomSpawner : MonoBehaviour
     public GameObject mushroomPrefab;
 
     // Interval between spawns in seconds
-    public float spawnInterval = 5f; 
+    public float spawnInterval = 20f; 
 
     public float arenaSize = 500f; 
-    private float timer = 0f;
+    private float timer = 20f;
 
     void Start()
     {

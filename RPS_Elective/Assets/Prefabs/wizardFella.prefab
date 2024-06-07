@@ -2057,7 +2057,7 @@ MonoBehaviour:
     type: 3}
   Lookout: {fileID: 7912336388467731914}
   targetDestination: {fileID: 0}
-  wizardMover: {fileID: 0}
+  wizardMover: {fileID: -1286775573207121572}
   otherPosition: {x: 0, y: 0, z: 0}
 --- !u!195 &-1286775573207121572
 NavMeshAgent:
