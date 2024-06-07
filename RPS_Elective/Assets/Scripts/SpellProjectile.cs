@@ -23,7 +23,7 @@ public class SpellProjectile : MonoBehaviour
 
     public void SetColor(string magicType)
     {
-        //default colour no u
+        //default colour SPELL AMERICAN
         Color color = Color.white;
 
 
@@ -61,15 +61,46 @@ public class SpellProjectile : MonoBehaviour
     //doubles or halves the damage depending on magic type
     private void HitTarget(PirateShipController target)
     {
+        
+        //grabs the targets magic type
+        string targetMagicType = target.GetCurrentMagicType();
         int damage = baseDamage;
 
-        if (magicType == "Fire" && target.GetCurrentMagicType() == "Leaf")
+        // fire magic
+        if (magicType == "Fire")
         {
-            damage *= 2; 
+            if (targetMagicType == "Leaf")
+            {
+                damage *= 2;
+            }
+            else if (targetMagicType == "Water")
+            {
+                damage /= 2;
+            }
         }
-        else if (magicType == "Fire" && target.GetCurrentMagicType() == "Water")
+        // leaf magic
+        else if (magicType == "Leaf")
         {
-            damage /= 2; 
+            if (targetMagicType == "Water")
+            {
+                damage *= 2;
+            }
+            else if (targetMagicType == "Fire")
+            {
+                damage /= 2;
+            }
+        }
+        //water magic type
+        else if (magicType == "Water")
+        {
+            if (targetMagicType == "Fire")
+            {
+                damage *= 2;
+            }
+            else if (targetMagicType == "Leaf")
+            {
+                damage /= 2;
+            }
         }
 
         target.hit(damage);

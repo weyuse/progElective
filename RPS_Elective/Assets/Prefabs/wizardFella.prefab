@@ -1255,9 +1255,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5379296600378858893}
   - component: {fileID: 5430793203559763291}
+  - component: {fileID: 4361336274114874467}
   m_Layer: 10
   m_Name: WizardBody
-  m_TagString: Untagged
+  m_TagString: Boat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1393,6 +1394,20 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0000038146973, y: 9.283916, z: 89.01546}
     m_Extent: {x: 116.46152, y: 48.080334, z: 112.55812}
   m_DirtyAABB: 0
+--- !u!136 &4361336274114874467
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5382700633143697253}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1.1646152
+  m_Height: 2.2511625
+  m_Direction: 1
+  m_Center: {x: 0.000000038146972, y: 0.89015466, z: -0.09283928}
 --- !u!1 &5382711257474296291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1966,6 +1981,7 @@ GameObject:
   - component: {fileID: 5427907961242533127}
   - component: {fileID: 7201155967747536818}
   - component: {fileID: -1286775573207121572}
+  - component: {fileID: 2782801044026182913}
   m_Layer: 10
   m_Name: wizardFella
   m_TagString: Boat
@@ -2040,6 +2056,9 @@ MonoBehaviour:
   magicSpellPrefab: {fileID: 2501402490172963987, guid: 6cf9d983923f144efbcd7c98b8ec1870,
     type: 3}
   Lookout: {fileID: 7912336388467731914}
+  targetDestination: {fileID: 0}
+  wizardMover: {fileID: 0}
+  otherPosition: {x: 0, y: 0, z: 0}
 --- !u!195 &-1286775573207121572
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2062,6 +2081,22 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!54 &2782801044026182913
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5382892350593215331}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5382896703395356749
 GameObject:
   m_ObjectHideFlags: 0
@@ -2551,8 +2586,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4247026036371535952}
-  - component: {fileID: 3941554684591482491}
-  - component: {fileID: 877764812150561695}
   - component: {fileID: 2249180160580105491}
   m_Layer: 10
   m_Name: Lookout
@@ -2575,53 +2608,6 @@ Transform:
   m_Father: {fileID: 5384145738076926331}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3941554684591482491
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7912336388467731914}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &877764812150561695
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7912336388467731914}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
 --- !u!135 &2249180160580105491
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2683,7 +2669,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8210757269847105999}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

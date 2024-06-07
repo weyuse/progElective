@@ -1,15 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 /// The event data that is generated when another participant in the arena was 'seen'
 public class ScannedRobotEvent {
     public string Name;
-    public float Distance; 
-}
+    public float Distance;
+    //also its position
+    public Vector3 Position; 
+    //also its magic type
+    public string MagicType; 
+    }
 
-public class BaseAI
+    //it complained unless I added monobehaviour
+    public class BaseAI
 {
     public PirateShipController Ship = null;
 

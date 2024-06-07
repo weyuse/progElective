@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 // The vehicle that will do battle. This is the same for every participant in the arena.
 // Its 'brains' (the AI you'll write) will be assigned by the <seealso cref="CompetitionManager"/>
@@ -15,7 +16,7 @@ public class PirateShipController : MonoBehaviour
     public GameObject Lookout = null;
 
     //the AI that will control this ship. Is set by <seealso cref="CompetitionManager"/>.
-   
+
     private BaseAI ai = null;
 
     // create a level playing field. Every ship has the same basic abilities
@@ -33,12 +34,21 @@ public class PirateShipController : MonoBehaviour
     //current magic type
     private string currentMagicType;
 
+    public Transform targetDestination;
+
+    public NavMeshAgent wizardMover;
+
+    public Vector3 otherPosition;
+
 
     // Start is called before the first frame update
     void Start()
     {
         //random magic type assigned at the start
         currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
+
+        //sets the nav agent to this game object
+        wizardMover = this.GetComponent<NavMeshAgent>();
     }
 
     // Assigns the AI that steers this instance
@@ -53,6 +63,7 @@ public class PirateShipController : MonoBehaviour
     public void StartBattle() {
         Debug.Log("test");
         StartCoroutine(ai.RunAI());
+        
     }
 
     // Update is called once per frame
@@ -60,45 +71,49 @@ public class PirateShipController : MonoBehaviour
     {
     }
 
+
+
+
     // If a ship is inside the 'scanner', its information (distance and name) will be sent to the AI
 
     void OnTriggerStay(Collider other)
     {
         if (other.tag == "Boat")
         {
+            Debug.Log("I see somethin");
             ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent();
             scannedRobotEvent.Distance = Vector3.Distance(transform.position, other.transform.position);
             scannedRobotEvent.Name = other.name;
+            //find the others position and magic type
+            scannedRobotEvent.Position = other.transform.position;
+            scannedRobotEvent.MagicType = other.GetComponent<PirateShipController>().GetCurrentMagicType();
+            Debug.Log(ai);
             ai.OnScannedRobot(scannedRobotEvent);
+            //this event is in BaseAI btw
         }
     }
 
-    
+
     //colliding with something tagged mushroom
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("magicMushroom"))
+        /*
+         * do this one in a bit
+         * if (other.CompareTag("magicMushroom"))
         {
             MushroomChange(other.gameObject);
         }
+        */
     }
 
-    private void MushroomChange(GameObject mushroom)
-    {
-        Debug.Log("Mushroom picked up!");
-        
-  
 
-    }
-    
-
-        public void hit(int damage)
+    public void hit(int damage)
     {
         health -= damage;
         if (health <= 0)
         {
             Debug.Log("wizard dead");
-            killWiz();            
+            killWiz();
         }
     }
 
@@ -118,6 +133,17 @@ public class PirateShipController : MonoBehaviour
         return health;
     }
 
+
+    //moving the wizard so long as it has a target to move to 
+    private void setDestination()
+    {
+        if (targetDestination != null)
+        {
+            Vector3 targetVector = targetDestination.transform.position;
+            wizardMover.SetDestination(targetVector);
+        }
+    }
+
     // Move ahead by the given distance
 
     public IEnumerator __Ahead(float distance) {
@@ -127,7 +153,7 @@ public class PirateShipController : MonoBehaviour
             Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(ArenaSize, 0, ArenaSize)), new Vector3(-ArenaSize, 0, -ArenaSize));
             transform.position = clampedPosition;
 
-            yield return new WaitForFixedUpdate();            
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -140,18 +166,18 @@ public class PirateShipController : MonoBehaviour
             Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(ArenaSize, 0, ArenaSize)), new Vector3(-ArenaSize, 0, -ArenaSize));
             transform.position = clampedPosition;
 
-            yield return new WaitForFixedUpdate();            
+            yield return new WaitForFixedUpdate();
         }
     }
 
     // Turns left by the given angle
-    
+
     public IEnumerator __TurnLeft(float angle) {
         int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
         for (int f = 0; f < numFrames; f++) {
             transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
 
-            yield return new WaitForFixedUpdate();            
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -162,7 +188,7 @@ public class PirateShipController : MonoBehaviour
         for (int f = 0; f < numFrames; f++) {
             transform.Rotate(0f, RotationSpeed * Time.fixedDeltaTime, 0f);
 
-            yield return new WaitForFixedUpdate();            
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -196,18 +222,21 @@ public class PirateShipController : MonoBehaviour
         for (int f = 0; f < numFrames; f++) {
             Lookout.transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
 
-            yield return new WaitForFixedUpdate();            
+            yield return new WaitForFixedUpdate();
         }
     }
 
     // Turn the sensor to the right by the given angle
- 
+
     public IEnumerator __TurnLookoutRight(float angle) {
         int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
         for (int f = 0; f < numFrames; f++) {
             Lookout.transform.Rotate(0f, RotationSpeed * Time.fixedDeltaTime, 0f);
 
-            yield return new WaitForFixedUpdate();            
+            yield return new WaitForFixedUpdate();
         }
     }
+
+    
+
 }
