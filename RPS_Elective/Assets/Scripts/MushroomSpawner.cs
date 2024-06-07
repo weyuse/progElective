@@ -7,10 +7,10 @@ public class MushroomSpawner : MonoBehaviour
     public GameObject mushroomPrefab;
 
     // Interval between spawns in seconds
-    public float spawnInterval = 20.0f; 
+    public float spawnInterval = 5f; 
 
-    public float arenaSize = 500.0f; 
-    private float timer = 0.0f;
+    public float arenaSize = 500f; 
+    private float timer = 0f;
 
     void Start()
     {
@@ -27,14 +27,14 @@ public class MushroomSpawner : MonoBehaviour
         // waiting for timer to reach the required amount of seconds
         if (timer >= spawnInterval)
         {
-            // reset the timer
-            timer = 0.0f;
+            // reset the timer now that somethings spawning
+            timer = 0f;
 
             // generate random spawn position within the arena with a 3d vector
             Vector3 spawnPosition = new Vector3(Random.Range(-arenaSize, arenaSize), 2, Random.Range(-arenaSize, arenaSize)
             );
 
-            // instantiate the mushroom at the random position quaternion meaning keeping the rotation as the prefab dictates
+            // instantiate the mushroom at the random position - quaternion meaning keeping the rotation as the prefab dictates
             Instantiate(mushroomPrefab, spawnPosition, Quaternion.identity);
         }
     }

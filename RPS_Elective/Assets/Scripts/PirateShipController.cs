@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 // The vehicle that will do battle. This is the same for every participant in the arena.
 // Its 'brains' (the AI you'll write) will be assigned by the <seealso cref="CompetitionManager"/>
@@ -72,8 +73,26 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
+    
+    //colliding with something tagged mushroom
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("magicMushroom"))
+        {
+            MushroomChange(other.gameObject);
+        }
+    }
+
+    private void MushroomChange(GameObject mushroom)
+    {
+        Debug.Log("Mushroom picked up!");
+        
   
-    public void hit(int damage)
+
+    }
+    
+
+        public void hit(int damage)
     {
         health -= damage;
         if (health <= 0)
@@ -87,7 +106,17 @@ public class PirateShipController : MonoBehaviour
     {
         Destroy(gameObject, 2.0f);
     }
-    
+
+    //telling the spell projectile script whats going on over here
+    public string GetCurrentMagicType()
+    {
+        return currentMagicType;
+    }
+
+    public int GetHealth()
+    {
+        return health;
+    }
 
     // Move ahead by the given distance
 
@@ -154,7 +183,8 @@ public class PirateShipController : MonoBehaviour
 
         if (spellProjectile != null)
         {
-            spellProjectile.SetColor(currentMagicType); // Set the color based on the current magic type
+            //sets the colour
+            spellProjectile.SetColor(currentMagicType);
         }
     }
 
