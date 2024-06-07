@@ -43,6 +43,9 @@ public class PirateShipController : MonoBehaviour
     //animator for polish
     private Animator animator;
 
+    //audio for music
+    private AudioSource audioSource;
+
 
     // Start is called before the first frame update
     void Start()
@@ -54,6 +57,8 @@ public class PirateShipController : MonoBehaviour
         wizardMover = this.GetComponent<NavMeshAgent>();
 
         animator = GetComponent<Animator>();
+
+        audioSource.Play();
        
     }
 
@@ -73,7 +78,8 @@ public class PirateShipController : MonoBehaviour
     public void StartBattle() {
         Debug.Log("test");
         StartCoroutine(ai.RunAI());
-        
+        animator.Play("BattleWalkForward");
+
     }
 
     // Update is called once per frame
