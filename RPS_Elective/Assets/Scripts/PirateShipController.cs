@@ -98,13 +98,13 @@ public class PirateShipController : MonoBehaviour
     //colliding with something tagged mushroom
     private void OnTriggerEnter(Collider other)
     {
-        /*
-         * do this one in a bit
-         * if (other.CompareTag("magicMushroom"))
+        
+         if (other.CompareTag("magicMushroom"))
         {
-            MushroomChange(other.gameObject);
+            currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
+            Destroy(other.gameObject);
         }
-        */
+        
     }
 
 

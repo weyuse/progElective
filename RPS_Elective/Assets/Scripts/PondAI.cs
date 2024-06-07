@@ -62,22 +62,7 @@ public class PondAI : BaseAI
 
         //what am I gonnna do
         string action = DetermineAction(health, myMagicType, enemyMagicType);
-        
-        if (action == "engage")
-        {
-           // Ship.StartCoroutine(Flee(300));
-        }
-        else if (action == "flee")
-        {
-            Debug.Log("Get outta there kid!");
-
-            //Ship.StartCoroutine(Flee(300));
-        }
-        else if (action == "findMushroom")
-        {
-           // Ship.StartCoroutine(Flee(300));
-        }
-        
+      
         Debug.Log(action);
     }
 
