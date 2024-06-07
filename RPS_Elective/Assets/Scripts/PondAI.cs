@@ -41,17 +41,6 @@ public class PondAI : BaseAI
         } 
     }
 
-    /*public override IEnumerator Flee()
-    {
-        while (true)
-        {
-            //flee
-            yield return Flee(20);
-
-        }
-    }
-    */
-
 
     public override void OnScannedRobot(ScannedRobotEvent e)
     {
@@ -102,15 +91,12 @@ public class PondAI : BaseAI
             //high health wizard will try their luck
             else
             {
-                if (IsAdvantageousMagic(myMagicType, enemyMagicType))
-                {
-                    return "engage";
-                }
-                //when all else fails flee
-                else
-                {
-                    return "flee";
-                }
+            
+             {
+                  return "engage";
+             }
+                
+                
             }
         }
     }

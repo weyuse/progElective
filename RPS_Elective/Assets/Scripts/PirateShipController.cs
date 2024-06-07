@@ -40,6 +40,9 @@ public class PirateShipController : MonoBehaviour
 
     public Vector3 otherPosition;
 
+    //animator for polish
+    private Animator animator;
+
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +52,14 @@ public class PirateShipController : MonoBehaviour
 
         //sets the nav agent to this game object
         wizardMover = this.GetComponent<NavMeshAgent>();
+
+        animator = GetComponent<Animator>();
+       
     }
+
+ 
+        
+       
 
     // Assigns the AI that steers this instance
 
@@ -87,7 +97,10 @@ public class PirateShipController : MonoBehaviour
             Debug.Log(other.name);
             //find the others position and magic type
             scannedRobotEvent.Position = other.transform.position;
-            scannedRobotEvent.MagicType = other.GetComponent<PirateShipController>().GetCurrentMagicType();
+            //look at the other ships brain and tell me whats in it
+            PirateShipController otherShip = other.GetComponent<PirateShipController>();
+            //specifcally their magic type
+            scannedRobotEvent.MagicType = otherShip.currentMagicType;
             Debug.Log(ai);
             ai.OnScannedRobot(scannedRobotEvent);
             //this event is in BaseAI btw
@@ -193,6 +206,8 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __FireFront(float power)
     {
+        animator.Play("Attack01");
+        
         GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         yield return new WaitForFixedUpdate();
 
