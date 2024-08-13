@@ -32,7 +32,7 @@ public class PirateShipController : MonoBehaviour
     private string[] magicTypes = { "Fire", "Water", "Leaf" };
 
     //current magic type
-    private string currentMagicType;
+    public string currentMagicType;
 
     public Transform targetDestination;
 
@@ -52,25 +52,24 @@ public class PirateShipController : MonoBehaviour
     {
         //random magic type assigned at the start
         currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
+        Debug.Log(currentMagicType);
 
         //sets the nav agent to this game object
         wizardMover = this.GetComponent<NavMeshAgent>();
 
         animator = GetComponent<Animator>();
 
-        audioSource.Play();
+        //audioSource.Play();
        
     }
-
- 
-        
-       
 
     // Assigns the AI that steers this instance
 
     public void SetAI(BaseAI _ai) {
         ai = _ai;
         ai.Ship = this;
+
+        Debug.Log("AI Being Set!");
     }
 
     // Tell this ship to start battling
@@ -85,10 +84,8 @@ public class PirateShipController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
     }
-
-
-
 
     // If a ship is inside the 'scanner', its information (distance and name) will be sent to the AI
 
@@ -100,16 +97,29 @@ public class PirateShipController : MonoBehaviour
             ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent();
             scannedRobotEvent.Distance = Vector3.Distance(transform.position, other.transform.position);
             scannedRobotEvent.Name = other.name;
-            Debug.Log(other.name);
-            //find the others position and magic type
+            //Debug.Log(other.name);
+
+            // Find the other's position and magic type
             scannedRobotEvent.Position = other.transform.position;
-            //look at the other ships brain and tell me whats in it
-            PirateShipController otherShip = other.GetComponent<PirateShipController>();
-            //specifcally their magic type
-            scannedRobotEvent.MagicType = otherShip.currentMagicType;
-            Debug.Log(ai);
-            ai.OnScannedRobot(scannedRobotEvent);
-            //this event is in BaseAI btw
+
+            // Look at the other ship's brain and tell me what's in it
+            PirateShipController otherShip = other.transform.root.GetComponent<PirateShipController>();
+
+            // Specifically their magic type
+            if (otherShip != null) // Ensure the component exists to avoid null reference exceptions
+            {
+                scannedRobotEvent.MagicType = otherShip.currentMagicType;
+                //Debug.Log(scannedRobotEvent.MagicType);
+                //Debug.Log(ai);
+                if (ai == null)
+                    return;
+
+                ai.OnScannedRobot(scannedRobotEvent);
+            }
+            else
+            {
+                Debug.LogWarning("PirateShipController component not found on the root GameObject.");
+            }
         }
     }
 
@@ -276,29 +286,27 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __Engage(float angle)
     {
-       
-            int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
-            for (int f = 0; f < numFrames; f++)
-            {
-                Lookout.transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
+        int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
+        for (int f = 0; f < numFrames; f++)
+        {
+            Lookout.transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
 
-                yield return new WaitForFixedUpdate();
-            }
-       
+            yield return new WaitForFixedUpdate();
+        }
+    
     }
 
     public IEnumerator __GetMushroom()
     {
-            // find the mushrooms and put them into an array
-            GameObject[] mushroomPoint = GameObject.FindGameObjectsWithTag("magicMushroom");
-            if (mushroomPoint.Length > 0)
-            {
-                GameObject randomMushroomPoint = mushroomPoint[Random.Range(0, mushroomPoint.Length)];
-                // Set the target destination to a random point in the array
-                setDestination(randomMushroomPoint.transform.position);
-            }
-
-            yield return new WaitForFixedUpdate();
+        // find the mushrooms and put them into an array
+        GameObject[] mushroomPoint = GameObject.FindGameObjectsWithTag("magicMushroom");
+        if (mushroomPoint.Length > 0)
+        {
+            GameObject randomMushroomPoint = mushroomPoint[Random.Range(0, mushroomPoint.Length)];
+            // Set the target destination to a random point in the array
+            setDestination(randomMushroomPoint.transform.position);
         }
 
+        yield return new WaitForFixedUpdate();
+    }
 }

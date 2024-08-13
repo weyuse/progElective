@@ -15,30 +15,37 @@ public class PondAI : BaseAI
     public override IEnumerator RunAI() {
         while (true)
         {
-            if (action == "engage")
-            {
-                yield return Engage(2);
-                yield return FireFront(1);
+            Debug.Log($"Current Action: {action}");
 
-            }
-            else if (action == "flee")
+            switch (action)
             {
-                yield return Flee();
-  
+                case "engage":
+                    yield return Engage(2);
+                    yield return FireFront(1);
+                    break;
+
+                case "flee":
+                    yield return Flee();
+                    break;
+
+                case "findMushroom":
+                    yield return GetMushroom();
+                    break;
+
+                default:
+                    // generic patrol
+                    yield return Patrol();
+                    break;
             }
-            else if(action == "findMushroom")
-            {
-                yield return GetMushroom();
-            }
-            else
-            {
-                //generic patrol
-                yield return TurnRight(90);
-                yield return TurnLeft(180);
-                yield return TurnRight(90);
-                yield return Ahead(200);
-            }
-        } 
+        }
+    }
+
+    private IEnumerator Patrol()
+    {
+        yield return TurnRight(90);
+        yield return TurnLeft(180);
+        yield return TurnRight(90);
+        yield return Ahead(200);
     }
 
 
@@ -50,7 +57,7 @@ public class PondAI : BaseAI
         string enemyMagicType = e.MagicType; 
 
         //what am I gonnna do
-        string action = DetermineAction(health, myMagicType, enemyMagicType);
+        action = DetermineAction(health, myMagicType, enemyMagicType);
       
         Debug.Log(action);
     }
@@ -91,15 +98,8 @@ public class PondAI : BaseAI
             //high health wizard will try their luck
             else
             {
-            
-             {
-                  return "engage";
-             }
-                
-                
+                return "engage";
             }
         }
-    }
-
-    
+    }   
 }

@@ -28,7 +28,6 @@ public class CompetitionManager : MonoBehaviour
             new PondAI(),
             new PondAI(),
             new PondAI()
-
         };
 
         for (int i = 0; i < 4; i++)
