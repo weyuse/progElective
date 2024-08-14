@@ -19,10 +19,17 @@ public class PirateShipController : MonoBehaviour
 
     private BaseAI ai = null;
 
+
     // create a level playing field. Every ship has the same basic abilities
-    private float WizSpeed = 100.0f;
+    private float WizSpeed = 1000.0f;
     private float ArenaSize = 500.0f;
     private float RotationSpeed = 180.0f;
+
+    
+    // variables for the map size calculation so the random spots arent out of bounds
+    private Vector3 mapMinBounds;
+    private Vector3 mapMaxBounds;
+
 
     //health and damage for winning competition purposes
     private int health = 100;
@@ -40,16 +47,13 @@ public class PirateShipController : MonoBehaviour
 
     public Vector3 otherPosition;
 
-    //animator for polish
-    private Animator animator;
-
-    //audio for music
-    private AudioSource audioSource;
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
+
+        CalculateNavMeshBounds();
+
         //random magic type assigned at the start
         currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
         Debug.Log(currentMagicType);
@@ -57,7 +61,7 @@ public class PirateShipController : MonoBehaviour
         //sets the nav agent to this game object
         wizardMover = this.GetComponent<NavMeshAgent>();
 
-        animator = GetComponent<Animator>();
+       // animator = GetComponent<Animator>();
 
         //audioSource.Play();
        
@@ -68,8 +72,6 @@ public class PirateShipController : MonoBehaviour
     public void SetAI(BaseAI _ai) {
         ai = _ai;
         ai.Ship = this;
-
-        Debug.Log("AI Being Set!");
     }
 
     // Tell this ship to start battling
@@ -77,7 +79,7 @@ public class PirateShipController : MonoBehaviour
     public void StartBattle() {
         Debug.Log("test");
         StartCoroutine(ai.RunAI());
-        animator.Play("BattleWalkForward");
+        //animator.Play("BattleWalkForward");
 
     }
 
@@ -87,18 +89,40 @@ public class PirateShipController : MonoBehaviour
 
     }
 
-    // If a ship is inside the 'scanner', its information (distance and name) will be sent to the AI
+    // Calculate the bounds of the NavMesh through each vertex 
+    private void CalculateNavMeshBounds()
+    {
+        NavMeshTriangulation navMeshData = NavMesh.CalculateTriangulation();
+
+        if (navMeshData.vertices.Length == 0)
+        {
+            Debug.LogError("where the navmesh");
+            return;
+        }
+
+              mapMinBounds = navMeshData.vertices[0];
+        mapMaxBounds = navMeshData.vertices[0];
+             
+        foreach (Vector3 vertex in navMeshData.vertices)
+        {
+            mapMinBounds = Vector3.Min(mapMinBounds, vertex);
+            mapMaxBounds = Vector3.Max(mapMaxBounds, vertex);
+        }
+
+        Debug.Log("navMesh Bounds Min: " + mapMinBounds + ", Max: " + mapMaxBounds);
+    }
+
+
 
     void OnTriggerStay(Collider other)
     {
         if (other.tag == "Boat")
         {
-            Debug.Log("I see somethin");
+            
             ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent();
             scannedRobotEvent.Distance = Vector3.Distance(transform.position, other.transform.position);
             scannedRobotEvent.Name = other.name;
-            //Debug.Log(other.name);
-
+      
             // Find the other's position and magic type
             scannedRobotEvent.Position = other.transform.position;
 
@@ -106,11 +130,9 @@ public class PirateShipController : MonoBehaviour
             PirateShipController otherShip = other.transform.root.GetComponent<PirateShipController>();
 
             // Specifically their magic type
-            if (otherShip != null) // Ensure the component exists to avoid null reference exceptions
+            if (otherShip != null) 
             {
                 scannedRobotEvent.MagicType = otherShip.currentMagicType;
-                //Debug.Log(scannedRobotEvent.MagicType);
-                //Debug.Log(ai);
                 if (ai == null)
                     return;
 
@@ -164,54 +186,6 @@ public class PirateShipController : MonoBehaviour
     }
 
 
-    // Move ahead by the given distance
-
-    public IEnumerator __Ahead(float distance) {
-        int numFrames = (int)(distance / (WizSpeed * Time.fixedDeltaTime));
-        for (int f = 0; f < numFrames; f++) {
-            transform.Translate(new Vector3(0f, 0f, WizSpeed * Time.fixedDeltaTime), Space.Self);
-            Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(ArenaSize, 0, ArenaSize)), new Vector3(-ArenaSize, 0, -ArenaSize));
-            transform.position = clampedPosition;
-
-            yield return new WaitForFixedUpdate();
-        }
-    }
-
-    // Move backwards by the given distance
-
-    public IEnumerator __Back(float distance) {
-        int numFrames = (int)(distance / (WizSpeed * Time.fixedDeltaTime));
-        for (int f = 0; f < numFrames; f++) {
-            transform.Translate(new Vector3(0f, 0f, -WizSpeed * Time.fixedDeltaTime), Space.Self);
-            Vector3 clampedPosition = Vector3.Max(Vector3.Min(transform.position, new Vector3(ArenaSize, 0, ArenaSize)), new Vector3(-ArenaSize, 0, -ArenaSize));
-            transform.position = clampedPosition;
-
-            yield return new WaitForFixedUpdate();
-        }
-    }
-
-    // Turns left by the given angle
-
-    public IEnumerator __TurnLeft(float angle) {
-        int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
-        for (int f = 0; f < numFrames; f++) {
-            transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
-
-            yield return new WaitForFixedUpdate();
-        }
-    }
-
-    // Turns right by the given angle
-
-    public IEnumerator __TurnRight(float angle) {
-        int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
-        for (int f = 0; f < numFrames; f++) {
-            transform.Rotate(0f, RotationSpeed * Time.fixedDeltaTime, 0f);
-
-            yield return new WaitForFixedUpdate();
-        }
-    }
-
     // Sit and hold still for one (fixed!) update
 
     public IEnumerator __DoNothing() {
@@ -222,7 +196,7 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __FireFront(float power)
     {
-        animator.Play("Attack01");
+       // animator.Play("Attack01");
         
         GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         yield return new WaitForFixedUpdate();
@@ -233,29 +207,6 @@ public class PirateShipController : MonoBehaviour
         {
             //sets the colour
             spellProjectile.SetColor(currentMagicType);
-        }
-    }
-
-
-    // Turn the sensor to the left by the given angle
-
-    public IEnumerator __TurnLookoutLeft(float angle) {
-        int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
-        for (int f = 0; f < numFrames; f++) {
-            Lookout.transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
-
-            yield return new WaitForFixedUpdate();
-        }
-    }
-
-    // Turn the sensor to the right by the given angle
-
-    public IEnumerator __TurnLookoutRight(float angle) {
-        int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
-        for (int f = 0; f < numFrames; f++) {
-            Lookout.transform.Rotate(0f, RotationSpeed * Time.fixedDeltaTime, 0f);
-
-            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -273,6 +224,43 @@ public class PirateShipController : MonoBehaviour
         }
 
         yield return new WaitForFixedUpdate(); 
+    }
+
+
+    public IEnumerator __Patrol()
+    {
+        while (true)
+        {
+            // Get a random point on the NavMesh
+            Vector3 randomDestination = GetRandomPointOnNavMesh();
+            setDestination(randomDestination);
+
+            // Wait until dude reaches the destination
+            while (!wizardMover.pathPending && wizardMover.remainingDistance > wizardMover.stoppingDistance)
+            {
+                yield return null; 
+            }
+
+            // Wait for a short duration before choosing a new destination
+            yield return new WaitForSeconds(2f); 
+        }
+    }
+
+    private Vector3 GetRandomPointOnNavMesh()
+    {
+        // Generate a random point within the map bounds
+        Vector3 randomPoint = new Vector3(
+            Random.Range(mapMinBounds.x, mapMaxBounds.x), 0f, Random.Range(mapMinBounds.z, mapMaxBounds.z)
+        );
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomPoint, out hit, 100f, NavMesh.AllAreas))
+        {
+            return hit.position;
+        }
+
+        // If no valid point is found, return the current position
+        return transform.position;
     }
 
     //moving the wizard so long as it has a target to move to 

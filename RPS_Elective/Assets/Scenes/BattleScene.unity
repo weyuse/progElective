@@ -6175,6 +6175,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: wizardFella
       objectReference: {fileID: 0}
+    - target: {fileID: 5382892350593215331, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5384145738076926331, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
         type: 3}
       propertyPath: m_LocalPosition.x

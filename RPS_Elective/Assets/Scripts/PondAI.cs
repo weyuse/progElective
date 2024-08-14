@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 
@@ -11,11 +12,22 @@ public class PondAI : BaseAI
     private float healthThresholdLow = 30;
     private float healthThresholdMedium = 60;
     private string action;
+    //private float lastShotTime = 0f;
+    //private float cooldownTime = 2f; // Cooldown period between shots in seconds
+    //private NavMeshAgent agent;
+
+
+
+    private void Start()
+    {
+        //agent = GetComponent<NavMeshAgent>();
+    }
 
     public override IEnumerator RunAI() {
         while (true)
         {
             Debug.Log($"Current Action: {action}");
+
 
             switch (action)
             {
@@ -40,16 +52,7 @@ public class PondAI : BaseAI
         }
     }
 
-    private IEnumerator Patrol()
-    {
-        yield return TurnRight(90);
-        yield return TurnLeft(180);
-        yield return TurnRight(90);
-        yield return Ahead(200);
-    }
-
-
-    public override void OnScannedRobot(ScannedRobotEvent e)
+       public override void OnScannedRobot(ScannedRobotEvent e)
     {
         //what are the factors that influence my decision
         float health = Ship.GetHealth();

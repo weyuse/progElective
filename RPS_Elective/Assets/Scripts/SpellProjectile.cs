@@ -1,32 +1,27 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// The projectile that is fired.
-/// Currently never leaves the scene once added
+
 public class SpellProjectile : MonoBehaviour
 
 {
     private string magicType = "";
     private int baseDamage = 10;
-
-    // Start is called before the first frame update
+       
     void Start()
     {
         
     }
-    // Makes the bullet fly
-    
+       
     void FixedUpdate()
     {
         transform.Translate(new Vector3(0f, 0f, 500 * Time.fixedDeltaTime), Space.Self);
+        Destroy(gameObject, 2f);
     }
 
     public void SetColor(string magicType)
     {
         //default colour SPELL AMERICAN
         Color color = Color.white;
-
-
 
         //changing per type
         switch (magicType)

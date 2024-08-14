@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-/// The event data that is generated when another participant in the arena was 'seen'
+// The event data that is generated when another participant in the arena was 'seen'
 public class ScannedRobotEvent {
     public string Name;
     public float Distance;
@@ -19,52 +19,15 @@ public class ScannedRobotEvent {
 {
     public PirateShipController Ship = null;
 
-    /// Another participant was 'seen'. Do something with the info stored in the even data
+    // Another participant was 'seen'. Do something with the info stored in the even data
    
     public virtual void OnScannedRobot(ScannedRobotEvent e)
     {
       
     }
 
-    /// Move this ship ahead by the given distance
-  
-    public IEnumerator Ahead(float distance) {
-        yield return Ship.__Ahead(distance);
-    }
-
-    /// Move the ship backwards by the given distance
-    /// 
-    public IEnumerator Back(float distance) {
-        yield return Ship.__Back(distance);
-    }
-
-    /// Turn the sensor to the left by the given angle
-
-    public IEnumerator TurnLookoutLeft(float angle) {
-        yield return Ship.__TurnLookoutLeft(angle);
-    }
-
-    /// Turn the sensor to the right by the given angle
-
-    public IEnumerator TurnLookoutRight(float angle) {
-        yield return Ship.__TurnLookoutRight(angle);
-    }
-
-    /// Turns the ship left by the given angle
-    
-    public IEnumerator TurnLeft(float angle) {
-        yield return Ship.__TurnLeft(angle);
-    }
-
-    /// Turns the ship right by the given angle
-
-    public IEnumerator TurnRight(float angle) {
-        yield return Ship.__TurnRight(angle);
-    }
-
-    /// Fire from the forward pointing cannon
-
-    public IEnumerator FireFront(float power) {
+    public IEnumerator FireFront(float power)
+    {
         yield return Ship.__FireFront(power);
     }
 
@@ -83,6 +46,11 @@ public class ScannedRobotEvent {
     public IEnumerator GetMushroom()
     {
         yield return Ship.__GetMushroom();
+    }
+
+    public IEnumerator Patrol()
+    {
+        yield return Ship.__Patrol();
     }
 
 
