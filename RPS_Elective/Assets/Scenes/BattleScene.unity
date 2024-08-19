@@ -6160,6 +6160,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1286775573207121572, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
+        type: 3}
+      propertyPath: m_Speed
+      value: 100000
+      objectReference: {fileID: 0}
+    - target: {fileID: -1286775573207121572, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
+        type: 3}
+      propertyPath: m_Acceleration
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: -733096038829456933, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
         type: 3}
       propertyPath: m_Controller

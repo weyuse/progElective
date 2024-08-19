@@ -2037,6 +2037,7 @@ MonoBehaviour:
   magicSpellPrefab: {fileID: 2501402490172963987, guid: 6cf9d983923f144efbcd7c98b8ec1870,
     type: 3}
   Lookout: {fileID: 7912336388467731914}
+  currentMagicType: 
   targetDestination: {fileID: 0}
   wizardMover: {fileID: -1286775573207121572}
   otherPosition: {x: 0, y: 0, z: 0}
@@ -2050,7 +2051,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 800
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
