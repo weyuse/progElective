@@ -38,8 +38,9 @@ public class PirateShipController : MonoBehaviour
     public Transform targetDestination;
     public NavMeshAgent wizardMover;
     public Vector3 otherPosition;
+    private float RotationSpeed;  // Now retrieved from NavMeshAgent
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +51,8 @@ public class PirateShipController : MonoBehaviour
         Debug.Log(currentMagicType);
 
         //sets the nav agent to this game object
-        wizardMover = this.GetComponent<NavMeshAgent>();       
+        wizardMover = this.GetComponent<NavMeshAgent>();
+        RotationSpeed = wizardMover.angularSpeed;
     }
 
     // Assigns the AI that steers this instance
