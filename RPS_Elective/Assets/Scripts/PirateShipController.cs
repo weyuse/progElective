@@ -16,14 +16,7 @@ public class PirateShipController : MonoBehaviour
     public GameObject Lookout = null;
 
     //the AI that will control this ship. Is set by <seealso cref="CompetitionManager"/>.
-
     private BaseAI ai = null;
-
-
-    // create a level playing field. Every ship has the same basic abilities
-    private float WizSpeed = 1000.0f;
-    private float ArenaSize = 500.0f;
-    private float RotationSpeed = 180.0f;
 
     
     // variables for the map size calculation so the random spots arent out of bounds
@@ -41,17 +34,15 @@ public class PirateShipController : MonoBehaviour
     //current magic type
     public string currentMagicType;
 
+    //movement components
     public Transform targetDestination;
-
     public NavMeshAgent wizardMover;
-
     public Vector3 otherPosition;
 
     
     // Start is called before the first frame update
     void Start()
     {
-
         CalculateNavMeshBounds();
 
         //random magic type assigned at the start
@@ -59,12 +50,7 @@ public class PirateShipController : MonoBehaviour
         Debug.Log(currentMagicType);
 
         //sets the nav agent to this game object
-        wizardMover = this.GetComponent<NavMeshAgent>();
-
-       // animator = GetComponent<Animator>();
-
-        //audioSource.Play();
-       
+        wizardMover = this.GetComponent<NavMeshAgent>();       
     }
 
     // Assigns the AI that steers this instance
@@ -77,10 +63,7 @@ public class PirateShipController : MonoBehaviour
     // Tell this ship to start battling
 
     public void StartBattle() {
-        Debug.Log("test");
         StartCoroutine(ai.RunAI());
-        //animator.Play("BattleWalkForward");
-
     }
 
     // Update is called once per frame
@@ -100,7 +83,7 @@ public class PirateShipController : MonoBehaviour
             return;
         }
 
-              mapMinBounds = navMeshData.vertices[0];
+        mapMinBounds = navMeshData.vertices[0];
         mapMaxBounds = navMeshData.vertices[0];
              
         foreach (Vector3 vertex in navMeshData.vertices)
