@@ -15,7 +15,9 @@ public class SpellProjectile : MonoBehaviour
     void FixedUpdate()
     {
         transform.Translate(new Vector3(0f, 0f, 500 * Time.fixedDeltaTime), Space.Self);
+        Debug.Log("bang");
         Destroy(gameObject, 2f);
+        
     }
 
     public void SetColor(string magicType)

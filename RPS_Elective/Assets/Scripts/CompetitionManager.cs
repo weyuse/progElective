@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// This is the class / component that manages the arena.
-/// It generates / Instantiates the AI game objects and lets the games begin!
-/// </summary>
+
 public class CompetitionManager : MonoBehaviour
 {
     // the prefab for the participants in the battle
@@ -17,10 +14,7 @@ public class CompetitionManager : MonoBehaviour
     // the list that keeps track of all the participants
     private List<PirateShipController> pirateShips = new List<PirateShipController>();
 
-  
-    /// creates the 4 ships that will do battle
-    /// 4 ship prefabs will be instantated and each will be assigned an AI derived from BaseAI
-  
+   
     void Start()
     {
         BaseAI[] aiArray = new BaseAI[] {
@@ -37,14 +31,14 @@ public class CompetitionManager : MonoBehaviour
             pirateShipController.SetAI(aiArray[i]);
             pirateShips.Add(pirateShipController);
         }
+
+        foreach(var pirateShip in pirateShips) {
+            pirateShip.StartBattle();
+        }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            foreach (var pirateShip in pirateShips) {
-                pirateShip.StartBattle();
-            }
-        }
+               
     }
 }

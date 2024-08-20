@@ -2,16 +2,12 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-
-
-/// You can modify this template to make your own AI
-
 public class PondAI : BaseAI
 {
 
     private float healthThresholdLow = 30;
     private float healthThresholdMedium = 60;
-    private string action;
+    private string action = "patrol";
     //private float lastShotTime = 0f;
     //private float cooldownTime = 2f; // Cooldown period between shots in seconds
     //private NavMeshAgent agent;
@@ -21,17 +17,19 @@ public class PondAI : BaseAI
     private void Start()
     {
         //agent = GetComponent<NavMeshAgent>();
+
     }
 
-    public override IEnumerator RunAI() {
+    public override IEnumerator RunAI()
+    {
         while (true)
         {
-            Debug.Log($"Current Action: {action}");
-
-
+            Debug.Log("Current Action:" + action);
+                        
             switch (action)
             {
                 case "engage":
+                    Debug.Log("Lets get engaging");
                     yield return Engage(2);
                     yield return FireFront(1);
                     break;
@@ -44,27 +42,30 @@ public class PondAI : BaseAI
                     yield return GetMushroom();
                     break;
 
-                default:
+                case "patrol":
                     // generic patrol
                     yield return Patrol();
                     break;
             }
-        }
-    }
+           
 
-       public override void OnScannedRobot(ScannedRobotEvent e)
+            yield return null;  
+        }
+       
+    }
+    
+
+
+
+    public override void OnScannedRobot(ScannedRobotEvent e)
     {
         //what are the factors that influence my decision
         float health = Ship.GetHealth();
         string myMagicType = Ship.GetCurrentMagicType();
-        string enemyMagicType = e.MagicType; 
-
+        string enemyMagicType = e.MagicType;
         //what am I gonnna do
         action = DetermineAction(health, myMagicType, enemyMagicType);
-      
-        Debug.Log(action);
     }
-
 
     private bool IsAdvantageousMagic(string myMagicType, string enemyMagicType)
     {
@@ -79,15 +80,13 @@ public class PondAI : BaseAI
 
 
     private string DetermineAction(float health, string myMagicType, string enemyMagicType)
-    {
+    {      
         //magic advantage makes them confident
-        if (IsAdvantageousMagic (myMagicType, enemyMagicType))
+        if (IsAdvantageousMagic(myMagicType, enemyMagicType))
         {
-            return "engage";
+                return "engage";
         }
-
-        else
-        {
+            
             //low health wizard is always a coward
             if (health <= healthThresholdLow)
             {
@@ -103,6 +102,8 @@ public class PondAI : BaseAI
             {
                 return "engage";
             }
-        }
-    }   
+       
+
+    }
 }
+   

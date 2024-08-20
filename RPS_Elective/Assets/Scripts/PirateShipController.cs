@@ -17,8 +17,7 @@ public class PirateShipController : MonoBehaviour
 
     //the AI that will control this ship. Is set by <seealso cref="CompetitionManager"/>.
     private BaseAI ai = null;
-
-    
+        
     // variables for the map size calculation so the random spots arent out of bounds
     public Vector3 mapMinBounds;
     public Vector3 mapMaxBounds;
@@ -181,8 +180,7 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __FireFront(float power)
     {
-       // animator.Play("Attack01");
-        
+            
         GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         yield return new WaitForFixedUpdate();
 
@@ -214,21 +212,20 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __Patrol()
     {
-        while (true)
+        Debug.Log("We do be patrolling");
+        // Get a random point on the NavMesh
+        Vector3 randomDestination = GetRandomPointOnNavMesh();
+        setDestination(randomDestination);
+
+        // Wait until dude reaches the destination
+        while (!wizardMover.pathPending && wizardMover.remainingDistance > wizardMover.stoppingDistance)
         {
-            // Get a random point on the NavMesh
-            Vector3 randomDestination = GetRandomPointOnNavMesh();
-            setDestination(randomDestination);
-
-            // Wait until dude reaches the destination
-            while (!wizardMover.pathPending && wizardMover.remainingDistance > wizardMover.stoppingDistance)
-            {
-                yield return null; 
-            }
-
-            // Wait for a short duration before choosing a new destination
-            yield return new WaitForSeconds(2f); 
+            yield return null; 
         }
+
+        // Wait for a short duration before choosing a new destination
+        yield return new WaitForSeconds(2f);
+        
     }
 
     private Vector3 GetRandomPointOnNavMesh()
@@ -259,6 +256,8 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __Engage(float angle)
     {
+
+        Debug.Log("We do be engaging");
         int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
         for (int f = 0; f < numFrames; f++)
         {
