@@ -20,8 +20,8 @@ public class PirateShipController : MonoBehaviour
 
     
     // variables for the map size calculation so the random spots arent out of bounds
-    private Vector3 mapMinBounds;
-    private Vector3 mapMaxBounds;
+    public Vector3 mapMinBounds;
+    public Vector3 mapMaxBounds;
 
 
     //health and damage for winning competition purposes
