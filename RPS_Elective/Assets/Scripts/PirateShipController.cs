@@ -39,7 +39,7 @@ public class PirateShipController : MonoBehaviour
     private float RotationSpeed;
 
     //cooldown for shooting to avoid machine-gun fire
-    private float castingCooldown = 2f;
+    private float castingCooldown = 1f;
     private bool canCast = true;
 
 
@@ -136,12 +136,17 @@ public class PirateShipController : MonoBehaviour
     //colliding with something tagged mushroom
     private void OnTriggerEnter(Collider other)
     {
-        
-         if (other.CompareTag("magicMushroom"))
+        if (!other.CompareTag("eyes"))
         {
-            currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
-            Destroy(other.gameObject);
+            if(this.CompareTag("magicMushroom"))
+        {
+                currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
+                Debug.Log(currentMagicType);
+                Debug.Log("shuffle");
+                Destroy(other.gameObject);
+            }
         }
+         
         
     }
 
@@ -271,29 +276,15 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __Engage(Transform target)
     {
-        /* wizardMover.isStopped = true;
-         Debug.Log("Engaging the target");
-
-
-
-              Debug.Log($"Aiming at: {target.name}");
-             // Enable rotation towards the target
-             wizardMover.updateRotation = true;
-
-             // Set the agent to rotate towards the target's position
-             wizardMover.SetDestination(target.position);
-
-             // As we're using NavMeshAgent for rotation, but stopping it from moving, we reset its destination each frame
-             wizardMover.isStopped = true;
-             yield return new WaitForFixedUpdate(); // Wait for the next fixed frame update
-        */
-        Debug.Log("Engaging the target");
-
+       Debug.Log("Engaging the target");
+        wizardMover.isStopped = true;
         while (true)
         {
             if (target == null)
             {
                 Debug.Log("Target is null, stopping engagement.");
+                wizardMover.isStopped = false;
+                yield return StartCoroutine(__Patrol());
                 yield break; // Stop the coroutine if the target is null
             }
 
@@ -301,13 +292,15 @@ public class PirateShipController : MonoBehaviour
             Debug.Log($"Aiming at: {target.name}");
 
             // Enable rotation towards the target
-            wizardMover.updateRotation = true;
+            //wizardMover.updateRotation = true;
 
             // Set the agent to rotate towards the target's position
-            wizardMover.SetDestination(target.position);
+            //wizardMover.SetDestination(target.position);
+
+            transform.LookAt(target);
 
             yield return StartCoroutine(__FireFront(1));
-
+           
             // Wait for the next frame
             yield return null;
 
