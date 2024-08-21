@@ -37,7 +37,11 @@ public class PirateShipController : MonoBehaviour
     public Transform targetDestination;
     public NavMeshAgent wizardMover;
     public Vector3 otherPosition;
-    private float RotationSpeed;  // Now retrieved from NavMeshAgent
+    private float RotationSpeed;
+
+    //cooldown for shooting to avoid machine-gun fire
+    private float castingCooldown = 2f;
+    private bool canCast = true;
 
 
     // Start is called before the first frame update
@@ -180,7 +184,13 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __FireFront(float power)
     {
-            
+        if (!canCast)
+        {
+            yield break; 
+        }
+
+        canCast = false;
+
         GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         yield return new WaitForFixedUpdate();
 
@@ -191,6 +201,10 @@ public class PirateShipController : MonoBehaviour
             //sets the colour
             spellProjectile.SetColor(currentMagicType);
         }
+
+        yield return new WaitForSeconds(castingCooldown);
+
+        canCast = true;
     }
 
     // Flee method to move the ship away from the enemy
