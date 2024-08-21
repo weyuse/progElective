@@ -8,10 +8,7 @@ public class PondAI : BaseAI
     private float healthThresholdLow = 30;
     private float healthThresholdMedium = 60;
     private string action = "patrol";
-    //private float lastShotTime = 0f;
-    //private float cooldownTime = 2f; // Cooldown period between shots in seconds
-    //private NavMeshAgent agent;
-
+    private Transform targetTransform;
 
 
     private void Start()
@@ -30,8 +27,8 @@ public class PondAI : BaseAI
             {
                 case "engage":
                     Debug.Log("Lets get engaging");
-                    yield return Engage(2);
-                    yield return FireFront(1);
+                    yield return Engage(targetTransform);
+                    //yield return FireFront(1);
                     break;
 
                 case "flee":
@@ -59,12 +56,27 @@ public class PondAI : BaseAI
 
     public override void OnScannedRobot(ScannedRobotEvent e)
     {
-        //what are the factors that influence my decision
-        float health = Ship.GetHealth();
-        string myMagicType = Ship.GetCurrentMagicType();
-        string enemyMagicType = e.MagicType;
-        //what am I gonnna do
-        action = DetermineAction(health, myMagicType, enemyMagicType);
+        GameObject targetObject = GameObject.Find(e.Name);
+
+        if (targetObject != null && targetObject.CompareTag("Boat"))
+        {
+            Transform wizardBody = targetObject.transform.Find("WizardBody");
+            if (wizardBody != null)
+            {
+                targetTransform = wizardBody;
+                float health = Ship.GetHealth();
+                string myMagicType = Ship.GetCurrentMagicType();
+                string enemyMagicType = e.MagicType;
+                action = DetermineAction(health, myMagicType, enemyMagicType);
+            }
+            else
+            {
+                Debug.Log("no WizardBody part found");
+            }
+        }
+
+
+
     }
 
     private bool IsAdvantageousMagic(string myMagicType, string enemyMagicType)

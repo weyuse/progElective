@@ -38,9 +38,9 @@ public class ScannedRobotEvent {
         yield return Ship.__Flee();
     }
 
-    public IEnumerator Engage(float angle)
+    public IEnumerator Engage(Transform target)
     {
-        yield return Ship.__Engage(angle);
+        yield return Ship.__Engage(target);
     }
 
     public IEnumerator GetMushroom()

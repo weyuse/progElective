@@ -15,7 +15,6 @@ public class SpellProjectile : MonoBehaviour
     void FixedUpdate()
     {
         transform.Translate(new Vector3(0f, 0f, 500 * Time.fixedDeltaTime), Space.Self);
-        Debug.Log("bang");
         Destroy(gameObject, 2f);
         
     }
@@ -45,11 +44,12 @@ public class SpellProjectile : MonoBehaviour
     // Checking if the missile hits a wizard still tagged as boat
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Boat"))
+      if (other.CompareTag("Boat"))
         {
             PirateShipController targetShip = other.GetComponent<PirateShipController>();
             if (targetShip != null)
             {
+                Debug.Log("hit a wizard");
                 HitTarget(targetShip);
             }
         }
@@ -101,7 +101,7 @@ public class SpellProjectile : MonoBehaviour
         }
 
         target.hit(damage);
-        //gets rid off the game object so it doesnt drift off forever
+        //gets rid of the game object so it doesnt drift off forever
         Destroy(gameObject);
     }
 }

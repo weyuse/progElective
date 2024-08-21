@@ -23,9 +23,8 @@ public class PirateShipController : MonoBehaviour
     public Vector3 mapMaxBounds;
 
 
-    //health and damage for winning competition purposes
+    //health 
     private int health = 100;
-    private int damage = 10;
 
     //magic types
     private string[] magicTypes = { "Fire", "Water", "Leaf" };
@@ -150,9 +149,11 @@ public class PirateShipController : MonoBehaviour
     public void hit(int damage)
     {
         health -= damage;
+        Debug.Log("Wizard Hit Damage:" + damage + "Remaining health:" + health);
         if (health <= 0)
         {
             Debug.Log("wizard dead");
+            
             killWiz();
         }
     }
@@ -268,18 +269,49 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
-    public IEnumerator __Engage(float angle)
+    public IEnumerator __Engage(Transform target)
     {
+        /* wizardMover.isStopped = true;
+         Debug.Log("Engaging the target");
 
-        Debug.Log("We do be engaging");
-        int numFrames = (int)(angle / (RotationSpeed * Time.fixedDeltaTime));
-        for (int f = 0; f < numFrames; f++)
+
+
+              Debug.Log($"Aiming at: {target.name}");
+             // Enable rotation towards the target
+             wizardMover.updateRotation = true;
+
+             // Set the agent to rotate towards the target's position
+             wizardMover.SetDestination(target.position);
+
+             // As we're using NavMeshAgent for rotation, but stopping it from moving, we reset its destination each frame
+             wizardMover.isStopped = true;
+             yield return new WaitForFixedUpdate(); // Wait for the next fixed frame update
+        */
+        Debug.Log("Engaging the target");
+
+        while (true)
         {
-            Lookout.transform.Rotate(0f, -RotationSpeed * Time.fixedDeltaTime, 0f);
+            if (target == null)
+            {
+                Debug.Log("Target is null, stopping engagement.");
+                yield break; // Stop the coroutine if the target is null
+            }
 
-            yield return new WaitForFixedUpdate();
+            // Log target aiming
+            Debug.Log($"Aiming at: {target.name}");
+
+            // Enable rotation towards the target
+            wizardMover.updateRotation = true;
+
+            // Set the agent to rotate towards the target's position
+            wizardMover.SetDestination(target.position);
+
+            yield return StartCoroutine(__FireFront(1));
+
+            // Wait for the next frame
+            yield return null;
+
         }
-    
     }
 
     public IEnumerator __GetMushroom()

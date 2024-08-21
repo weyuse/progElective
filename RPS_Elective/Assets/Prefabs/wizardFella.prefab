@@ -1258,7 +1258,7 @@ GameObject:
   - component: {fileID: 4361336274114874467}
   m_Layer: 0
   m_Name: WizardBody
-  m_TagString: Boat
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1404,8 +1404,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 1.1646152
-  m_Height: 2.2511625
+  m_Radius: 2
+  m_Height: 3
   m_Direction: 1
   m_Center: {x: 0.000000038146972, y: 0.89015466, z: -0.09283928}
 --- !u!1 &5382711257474296291
@@ -1984,7 +1984,7 @@ GameObject:
   - component: {fileID: -733096038829456933}
   m_Layer: 0
   m_Name: wizardFella
-  m_TagString: Untagged
+  m_TagString: Boat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2053,10 +2053,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 800
+  m_Speed: 50
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 150
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -2592,7 +2592,7 @@ GameObject:
   - component: {fileID: 2249180160580105491}
   m_Layer: 0
   m_Name: Lookout
-  m_TagString: Untagged
+  m_TagString: eyes
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2651,7 +2651,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8210757269847105999}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.92, y: 1.134, z: 1.65}
+  m_LocalPosition: {x: 0.224, y: 1.134, z: 1.65}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 5384145738076926331}
