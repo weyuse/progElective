@@ -206,6 +206,7 @@ public class PirateShipController : MonoBehaviour
         {
             //sets the colour
             spellProjectile.SetColor(currentMagicType);
+            spellProjectile.magicType = currentMagicType;
         }
 
         yield return new WaitForSeconds(castingCooldown);
@@ -217,6 +218,7 @@ public class PirateShipController : MonoBehaviour
 
     public IEnumerator __Flee()
     {
+        Debug.Log("Im trying to flee");
         // find the corners and put them into an array
         GameObject[] respawnPoint = GameObject.FindGameObjectsWithTag("Respawn");
         if (respawnPoint.Length > 0)
@@ -284,7 +286,7 @@ public class PirateShipController : MonoBehaviour
             {
                 Debug.Log("Target is null, stopping engagement.");
                 wizardMover.isStopped = false;
-                yield return StartCoroutine(__Patrol());
+                //yield return StartCoroutine(__Patrol());
                 yield break; // Stop the coroutine if the target is null
             }
 
@@ -310,6 +312,7 @@ public class PirateShipController : MonoBehaviour
     public IEnumerator __GetMushroom()
     {
         // find the mushrooms and put them into an array
+        Debug.Log("Im trying to mushroom");
         GameObject[] mushroomPoint = GameObject.FindGameObjectsWithTag("magicMushroom");
         if (mushroomPoint.Length > 0)
         {

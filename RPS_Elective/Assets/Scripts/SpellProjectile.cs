@@ -4,7 +4,7 @@
 public class SpellProjectile : MonoBehaviour
 
 {
-    private string magicType = "";
+    public string magicType = "empty";
     private int baseDamage = 10;
        
     void Start()
@@ -21,8 +21,12 @@ public class SpellProjectile : MonoBehaviour
 
     public void SetColor(string magicType)
     {
+
+        this.magicType = magicType;
+        
         //default colour SPELL AMERICAN
         Color color = Color.white;
+
 
         //changing per type
         switch (magicType)
@@ -44,7 +48,7 @@ public class SpellProjectile : MonoBehaviour
     // Checking if the missile hits a wizard still tagged as boat
     void OnTriggerEnter(Collider other)
     {
-      if (other.CompareTag("Boat"))
+        if (other.CompareTag("Boat"))
         {
             PirateShipController targetShip = other.GetComponent<PirateShipController>();
             if (targetShip != null)
@@ -53,16 +57,20 @@ public class SpellProjectile : MonoBehaviour
                 HitTarget(targetShip);
             }
         }
+        else if (other.CompareTag("background")) 
+        {
+            Destroy(gameObject);
+            Debug.Log("Miss");
+        }
     }
 
     //doubles or halves the damage depending on magic type
-    private void HitTarget(PirateShipController target)
+    public void HitTarget(PirateShipController target)
     {
-        
         //grabs the targets magic type
         string targetMagicType = target.GetCurrentMagicType();
         int damage = baseDamage;
-
+        
         // fire magic
         if (magicType == "Fire")
         {

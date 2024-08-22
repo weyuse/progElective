@@ -1742,7 +1742,6 @@ MonoBehaviour:
   mushroomPrefab: {fileID: 7968890552788450735, guid: f0b9c295a91f6b649b8e100ed747bb99,
     type: 3}
   spawnInterval: 20
-  arenaSize: 500
 --- !u!4 &581032035
 Transform:
   m_ObjectHideFlags: 0
@@ -6180,6 +6179,11 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5382700633143697253, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Boat
+      objectReference: {fileID: 0}
     - target: {fileID: 5382892350593215331, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
         type: 3}
       propertyPath: m_Name
@@ -6189,6 +6193,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5382892350593215331, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 5384145738076926331, guid: 49f1e484be42a9d4bb1faebac87cdcb0,
         type: 3}

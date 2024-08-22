@@ -26,9 +26,7 @@ public class PondAI : BaseAI
             switch (action)
             {
                 case "engage":
-                    Debug.Log("Lets get engaging");
                     yield return Engage(targetTransform);
-                    //yield return FireFront(1);
                     break;
 
                 case "flee":
