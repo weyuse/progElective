@@ -20,7 +20,7 @@ public class PirateShipController : MonoBehaviour
     public Vector3 mapMaxBounds;
 
     //health 
-    private int health = 100;
+    private int health = 1000;
 
     //magic types
     private string[] magicTypes = { "Fire", "Water", "Leaf" };
@@ -131,16 +131,9 @@ public class PirateShipController : MonoBehaviour
     //colliding with something tagged mushroom
     private void OnTriggerEnter(Collider other)
     {
-         if(this.CompareTag("magicMushroom"))
-         {
-            currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
-            Debug.Log(currentMagicType);
-            Debug.Log("shuffle");
-            Destroy(other.gameObject);
-         }           
         
     }
-
+    
 
     public void hit(int damage)
     {
@@ -156,7 +149,7 @@ public class PirateShipController : MonoBehaviour
 
     private void killWiz()
     {
-        Destroy(gameObject, 2.0f);
+        Destroy(gameObject, 1.0f);
     }
 
     //telling the spell projectile script whats going on over here
@@ -203,10 +196,10 @@ public class PirateShipController : MonoBehaviour
         yield return new WaitForSeconds(castingCooldown);
 
         canCast = true;
+        
     }
 
-    // Flee method to move the ship away from the enemy
-
+ 
     public IEnumerator __Flee(Transform target)
     {
         Debug.Log("Im trying to flee");
@@ -301,7 +294,6 @@ public class PirateShipController : MonoBehaviour
             {
                 Debug.Log("Target is null, stopping engagement.");
                 wizardMover.isStopped = false;
-                //yield return StartCoroutine(__Patrol());
                 yield break; // Stop the coroutine if the target is null
             }
 
@@ -317,13 +309,14 @@ public class PirateShipController : MonoBehaviour
             transform.LookAt(target);
 
             yield return StartCoroutine(__FireFront(1));
-           
+
             // Wait for the next frame
             //yield return null;
-
+            Debug.Log("bout to break I promise");
             yield break;
-
+            
         }
+        
     }
 
     public IEnumerator __GetMushroom()
@@ -336,6 +329,41 @@ public class PirateShipController : MonoBehaviour
             GameObject randomMushroomPoint = mushroomPoint[Random.Range(0, mushroomPoint.Length)];
             // Set the target destination to a random point in the array
             setDestination(randomMushroomPoint.transform.position);
+
+            // Variables to handle timeout and retry
+            float maxTimeToReach = 15f; // Maximum time to try to reach the mushroom
+            float startTime = Time.time;
+
+            // Continue trying to reach the mushroom until it succeeds or times out
+            while (wizardMover.pathPending || wizardMover.remainingDistance > wizardMover.stoppingDistance)
+            {
+                // Check if time exceeds the maximum time allowed
+                if (Time.time - startTime > maxTimeToReach)
+                {
+                    Debug.Log("Giving up on reaching the mushroom, too far or unreachable.");
+                    yield break; 
+                }
+
+               yield return null;
+            }
+            // Successfully reached the mushroom
+            Debug.Log("Reached the mushroom.");
+            if (randomMushroomPoint != null)
+            {
+                string[] magicTypes = { "Fire", "Water", "Leaf" };
+                string currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
+
+                // Update the current magic type
+                this.GetComponent<PirateShipController>().currentMagicType = currentMagicType;
+                Debug.Log("Mushroom picked");
+
+                // Destroy the mushroom after collecting it
+                Destroy(randomMushroomPoint);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No mushrooms found in the scene.");
         }
 
         yield return new WaitForFixedUpdate();

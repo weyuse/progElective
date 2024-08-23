@@ -5,8 +5,8 @@ using UnityEngine.AI;
 public class PondAI : BaseAI
 {
 
-    private float healthThresholdLow = 30;
-    private float healthThresholdMedium = 60;
+    private float healthThresholdLow = 800;
+    private float healthThresholdMedium = 950;
     private string action = "patrol";
     private Transform targetTransform;
 
@@ -39,6 +39,10 @@ public class PondAI : BaseAI
 
                 case "patrol":
                     yield return Patrol();
+                    break;
+
+                default:
+                    action = "patrol";
                     break;
             }
            
@@ -88,11 +92,9 @@ public class PondAI : BaseAI
     }
 
 
-    private string DetermineAction(float health, string myMagicType, string enemyMagicType)
+    public string DetermineAction(float health, string myMagicType, string enemyMagicType)
     {
-        return "flee";
-
-        /*
+                
         //magic advantage makes them confident
         if (IsAdvantageousMagic(myMagicType, enemyMagicType))
         {
@@ -114,8 +116,7 @@ public class PondAI : BaseAI
             {
                 return "engage";
             }
-       */
-
+       
     }
 }
    

@@ -14,16 +14,16 @@ public class ScannedRobotEvent {
     public string MagicType; 
     }
 
-    //it complained unless I added monobehaviour
-    public class BaseAI
+//it complained unless I added monobehaviour
+public class BaseAI
 {
     public PirateShipController Ship = null;
 
     // Another participant was 'seen'. Do something with the info stored in the even data
-   
+
     public virtual void OnScannedRobot(ScannedRobotEvent e)
     {
-      
+
     }
 
     public IEnumerator FireFront(float power)
@@ -52,7 +52,10 @@ public class ScannedRobotEvent {
     {
         yield return Ship.__Patrol();
     }
-
+    public IEnumerator SeekNewPosition(Transform target)
+    {
+        yield return Ship.__SeekNewPosition(target);
+    }
 
     public virtual IEnumerator RunAI() {
         yield return null;

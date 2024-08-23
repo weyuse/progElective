@@ -2015,7 +2015,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5382892350593215331}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.3072609
   m_Height: 1.882848
@@ -2036,7 +2036,6 @@ MonoBehaviour:
   ProjectileFrontSpawnPoint: {fileID: 7081216380134432434}
   magicSpellPrefab: {fileID: 2501402490172963987, guid: 6cf9d983923f144efbcd7c98b8ec1870,
     type: 3}
-  Lookout: {fileID: 7912336388467731914}
   mapMinBounds: {x: 0, y: 0, z: 0}
   mapMaxBounds: {x: 0, y: 0, z: 0}
   currentMagicType: 
