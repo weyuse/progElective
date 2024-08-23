@@ -33,9 +33,9 @@ public class ScannedRobotEvent {
 
     // the flee command
 
-    public IEnumerator Flee()
+    public IEnumerator Flee(Transform target)
     {
-        yield return Ship.__Flee();
+        yield return Ship.__Flee(target);
     }
 
     public IEnumerator Engage(Transform target)

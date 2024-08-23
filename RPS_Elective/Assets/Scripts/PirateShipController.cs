@@ -12,16 +12,12 @@ public class PirateShipController : MonoBehaviour
     public Transform ProjectileFrontSpawnPoint = null;
     public GameObject magicSpellPrefab = null;
 
-    // the 'scanner' that allows the ship to 'see' its surroundings
-    public GameObject Lookout = null;
-
     //the AI that will control this ship. Is set by <seealso cref="CompetitionManager"/>.
     private BaseAI ai = null;
         
     // variables for the map size calculation so the random spots arent out of bounds
     public Vector3 mapMinBounds;
     public Vector3 mapMaxBounds;
-
 
     //health 
     private int health = 100;
@@ -41,7 +37,6 @@ public class PirateShipController : MonoBehaviour
     //cooldown for shooting to avoid machine-gun fire
     private float castingCooldown = 1f;
     private bool canCast = true;
-
 
     // Start is called before the first frame update
     void Start()
@@ -136,17 +131,13 @@ public class PirateShipController : MonoBehaviour
     //colliding with something tagged mushroom
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("eyes"))
-        {
-            if(this.CompareTag("magicMushroom"))
-        {
-                currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
-                Debug.Log(currentMagicType);
-                Debug.Log("shuffle");
-                Destroy(other.gameObject);
-            }
-        }
-         
+         if(this.CompareTag("magicMushroom"))
+         {
+            currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
+            Debug.Log(currentMagicType);
+            Debug.Log("shuffle");
+            Destroy(other.gameObject);
+         }           
         
     }
 
@@ -216,19 +207,43 @@ public class PirateShipController : MonoBehaviour
 
     // Flee method to move the ship away from the enemy
 
-    public IEnumerator __Flee()
+    public IEnumerator __Flee(Transform target)
     {
         Debug.Log("Im trying to flee");
-        // find the corners and put them into an array
-        GameObject[] respawnPoint = GameObject.FindGameObjectsWithTag("Respawn");
-        if (respawnPoint.Length > 0)
+
+        // Distance away from thing its fleeing from
+        float fleeDistance = 80f;
+        // avoiding an infinite loop if it can't find anywhere to flee to
+        int maxAttempts = 10; 
+        bool foundValidPoint = false;
+
+        for (int i = 0; i < maxAttempts; i++)
         {
-            GameObject randomRespawnPoint = respawnPoint[Random.Range(0, respawnPoint.Length)];
-            // Set the target destination to a random point in the array
-            setDestination(randomRespawnPoint.transform.position);
+            // random direction
+            Vector3 randomDirection = Random.insideUnitSphere * fleeDistance;
+            // away from targets position
+            randomDirection += target.position;
+
+            // Check if the random point is on the NavMesh
+            NavMeshHit hit;
+
+            if (NavMesh.SamplePosition(randomDirection, out hit, fleeDistance, NavMesh.AllAreas))
+            {
+                // Set the NavMeshAgent's destination to the valid point found
+                setDestination(hit.position);
+                foundValidPoint = true;
+                break;
+            }
         }
 
-        yield return new WaitForFixedUpdate(); 
+        
+        while (wizardMover.pathPending || wizardMover.remainingDistance > wizardMover.stoppingDistance)
+        {
+            // dont stop fleeing if not reached flee point
+            yield return null;
+        }
+
+        Debug.Log("Fled");
     }
 
 
@@ -304,7 +319,9 @@ public class PirateShipController : MonoBehaviour
             yield return StartCoroutine(__FireFront(1));
            
             // Wait for the next frame
-            yield return null;
+            //yield return null;
+
+            yield break;
 
         }
     }

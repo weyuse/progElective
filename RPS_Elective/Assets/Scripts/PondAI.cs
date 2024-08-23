@@ -30,7 +30,7 @@ public class PondAI : BaseAI
                     break;
 
                 case "flee":
-                    yield return Flee();
+                    yield return Flee(targetTransform);
                     break;
 
                 case "findMushroom":
@@ -38,7 +38,6 @@ public class PondAI : BaseAI
                     break;
 
                 case "patrol":
-                    // generic patrol
                     yield return Patrol();
                     break;
             }
@@ -90,7 +89,10 @@ public class PondAI : BaseAI
 
 
     private string DetermineAction(float health, string myMagicType, string enemyMagicType)
-    {      
+    {
+        return "flee";
+
+        /*
         //magic advantage makes them confident
         if (IsAdvantageousMagic(myMagicType, enemyMagicType))
         {
@@ -112,7 +114,7 @@ public class PondAI : BaseAI
             {
                 return "engage";
             }
-       
+       */
 
     }
 }
