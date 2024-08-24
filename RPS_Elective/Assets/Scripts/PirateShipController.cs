@@ -39,6 +39,9 @@ public class PirateShipController : MonoBehaviour
     private bool canCast = true;
 
     public Transform spellSource;
+    public float detectionRange = 1000f; 
+    public float detectionAngle = 45f;
+    public LayerMask visionMask;
 
     // Start is called before the first frame update
     void Start()
@@ -68,14 +71,76 @@ public class PirateShipController : MonoBehaviour
         StartCoroutine(ai.RunAI());
     }
 
-
-    
-
-    // Modified FixedUpdate to call the new method
-    void FixedUpdate()
+    public void PerformVisionConeDetection()
     {
-        PerformRaycastDetection();
+        if (spellSource == null)
+        {
+            Debug.LogWarning("SpellSource is not assigned.");
+            return;
+        }
+
+        // Get all colliders within the detection range
+        Collider[] hitColliders = Physics.OverlapSphere(spellSource.position, detectionRange);
+
+        foreach (var collider in hitColliders)
+        {
+            // Check if the collider is a potential target
+            if (collider.CompareTag("Boat"))
+            {
+                // Calculate the direction to the target
+                Vector3 directionToTarget = (collider.transform.position - spellSource.position).normalized;
+                float angleToTarget = Vector3.Angle(spellSource.forward, directionToTarget);
+
+                // Check if the target is within the vision cone
+                if (angleToTarget < detectionAngle)
+                {
+                    // Perform a raycast to check line of sight
+                    RaycastHit hit;
+                    if (Physics.Raycast(spellSource.position, directionToTarget, out hit, detectionRange))
+                    {
+                        // Ensure that the raycast hit the target and not an obstacle
+                        if (hit.collider == collider)
+                        {
+                            Debug.Log("Boat detected within vision cone and line of sight: " + collider.transform.name);
+
+                            // Create a ScannedRobotEvent and handle it
+                            ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent
+                            {
+                                Distance = Vector3.Distance(spellSource.position, collider.transform.position),
+                                Name = collider.transform.name,
+                                Position = collider.transform.position
+                            };
+
+                            PirateShipController otherShip = collider.transform.root.GetComponent<PirateShipController>();
+                            if (otherShip != null)
+                            {
+                                scannedRobotEvent.MagicType = otherShip.currentMagicType;
+                                if (ai != null)
+                                {
+                                    ai.OnScannedRobot(scannedRobotEvent);
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning("PirateShipController component not found on the root GameObject.");
+                            }
+                        }
+                        else
+                        {
+                            Debug.Log("Vision cone detected a boat, but it is behind an obstacle.");
+                        }
+                    }
+                }
+            }
+        }
     }
+
+
+        // Modified FixedUpdate to call the new method
+        void FixedUpdate()
+        { 
+            PerformVisionConeDetection();
+        }
 
     // Method to set a new destination for the wizardMover
     private void SetDestination(Vector3 destination)
@@ -86,9 +151,7 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
-
-
-    // Calculate the bounds of the NavMesh through each vertex 
+        // Calculate the bounds of the NavMesh through each vertex 
     private void CalculateNavMeshBounds()
     {
         NavMeshTriangulation navMeshData = NavMesh.CalculateTriangulation();
@@ -109,43 +172,6 @@ public class PirateShipController : MonoBehaviour
         }
 
 
-    }
-
-
-    public void PerformRaycastDetection()
-    {
-        float detectionRange = 10000f;
-        Vector3 rayOrigin = spellSource.position; // Set the ray's origin to the position of spellSource
-        Vector3 rayDirection = spellSource.forward;
-        Debug.DrawRay(rayOrigin, rayDirection * detectionRange, Color.red, 0.1f);
-        RaycastHit hit;
-        if (Physics.Raycast(rayOrigin, rayDirection, out hit, detectionRange))
-        {
-           
-            if (hit.collider.CompareTag("Boat"))
-            {
-                ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent
-                {
-                    Distance = Vector3.Distance(transform.position, hit.transform.position),
-                    Name = hit.transform.name,
-                    Position = hit.transform.position
-                };
-
-                PirateShipController otherShip = hit.transform.root.GetComponent<PirateShipController>();
-                if (otherShip != null)
-                {
-                    scannedRobotEvent.MagicType = otherShip.currentMagicType;
-                    if (ai != null)
-                    {
-                        ai.OnScannedRobot(scannedRobotEvent);
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("PirateShipController component not found on the root GameObject.");
-                }
-            }
-        }
     }
 
     public void hit(int damage)

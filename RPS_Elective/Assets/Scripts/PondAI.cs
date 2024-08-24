@@ -24,7 +24,7 @@ public class PondAI : BaseAI
         {
             if (Ship != null)
             {
-                Ship.PerformRaycastDetection();
+                Ship.PerformVisionConeDetection();
             }
 
             Debug.Log("Current Action:" + action);
@@ -32,24 +32,24 @@ public class PondAI : BaseAI
             switch (action)
             {
                 case "engage":
-                    if (targetTransform != null)
-                    {
-                        yield return Engage(targetTransform);
-                    }
-                    ResetTargetInformation();
+                    //if (targetTransform != null)
+                    //{
+                    //    yield return Engage(targetTransform);
+                    //}
+                    //ResetTargetInformation();
                     break;
 
                 case "flee":
                     yield return Flee(targetTransform);
                     // Reset target information after each action cycle
-                    ResetTargetInformation();
+                    //ResetTargetInformation();
                     yield return Patrol();
                     break;
 
                 case "findMushroom":
                     yield return GetMushroom();
                     // Reset target information after each action cycle
-                    ResetTargetInformation();
+                    //ResetTargetInformation();
                     yield return Patrol();
                     break;
 
@@ -70,15 +70,15 @@ public class PondAI : BaseAI
 
     private void ResetTargetInformation()
     {
-        Debug.Log("Resetting target information...");
-        targetTransform = null; // Clear the target reference
+        Debug.Log("Resetting target information... SIKE");
+        //targetTransform = null; // Clear the target reference
     }
 
 
     public override void OnScannedRobot(ScannedRobotEvent e)
     {
         GameObject targetObject = GameObject.Find(e.Name);
-
+        Debug.Log($"OnScannedRobot called with target: {e.Name}, Distance: {e.Distance}, MagicType: {e.MagicType}");
         if (targetObject != null && targetObject.CompareTag("Boat"))
         {
             Transform wizardBody = targetObject.transform.Find("WizardBody");
@@ -88,6 +88,7 @@ public class PondAI : BaseAI
                 float health = Ship.GetHealth();
                 string myMagicType = Ship.GetCurrentMagicType();
                 string enemyMagicType = e.MagicType;
+                Debug.Log("About to determine action");
                 action = DetermineAction(health, myMagicType, enemyMagicType);
             }
             else
