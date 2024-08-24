@@ -38,6 +38,8 @@ public class PirateShipController : MonoBehaviour
     private float castingCooldown = 1f;
     private bool canCast = true;
 
+    public Transform spellSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +52,7 @@ public class PirateShipController : MonoBehaviour
         //sets the nav agent to this game object
         wizardMover = this.GetComponent<NavMeshAgent>();
         //RotationSpeed = wizardMover.angularSpeed;
+
     }
 
     // Assigns the AI that steers this instance
@@ -71,7 +74,7 @@ public class PirateShipController : MonoBehaviour
     // Modified FixedUpdate to call the new method
     void FixedUpdate()
     {
-        
+        PerformRaycastDetection();
     }
 
     // Method to set a new destination for the wizardMover
@@ -111,9 +114,9 @@ public class PirateShipController : MonoBehaviour
 
     public void PerformRaycastDetection()
     {
-        float detectionRange = 100f; 
-        Vector3 rayOrigin = wizardMover.transform.position; 
-        Vector3 rayDirection = wizardMover.transform.forward; 
+        float detectionRange = 10000f;
+        Vector3 rayOrigin = spellSource.position; // Set the ray's origin to the position of spellSource
+        Vector3 rayDirection = spellSource.forward;
         Debug.DrawRay(rayOrigin, rayDirection * detectionRange, Color.red, 0.1f);
         RaycastHit hit;
         if (Physics.Raycast(rayOrigin, rayDirection, out hit, detectionRange))
@@ -205,7 +208,6 @@ public class PirateShipController : MonoBehaviour
 
         if (spellProjectile != null)
         {
-            //sets the colour
             spellProjectile.SetColor(currentMagicType);
             spellProjectile.magicType = currentMagicType;
         }

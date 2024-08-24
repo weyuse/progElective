@@ -2002,7 +2002,6 @@ Transform:
   m_Children:
   - {fileID: 5384321465969256047}
   - {fileID: 5379296600378858893}
-  - {fileID: 4247026036371535952}
   - {fileID: 7081216380134432434}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -2042,6 +2041,7 @@ MonoBehaviour:
   targetDestination: {fileID: 0}
   wizardMover: {fileID: -1286775573207121572}
   otherPosition: {x: 0, y: 0, z: 0}
+  spellSource: {fileID: 7081216380134432434}
 --- !u!195 &-1286775573207121572
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2579,50 +2579,6 @@ Transform:
   m_Father: {fileID: 5384371556740618935}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7912336388467731914
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4247026036371535952}
-  - component: {fileID: 2249180160580105491}
-  m_Layer: 0
-  m_Name: Lookout
-  m_TagString: eyes
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4247026036371535952
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7912336388467731914}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.98, y: 1.31, z: 6.9}
-  m_LocalScale: {x: 20, y: 20, z: 20}
-  m_Children: []
-  m_Father: {fileID: 5384145738076926331}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &2249180160580105491
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7912336388467731914}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.24438958
-  m_Center: {x: 0.2555494, y: -0.0000004577637, z: 0.000030517578}
 --- !u!1 &8210757269847105999
 GameObject:
   m_ObjectHideFlags: 0
@@ -2654,7 +2610,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 5384145738076926331}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4739653110005538698
 MeshFilter:
