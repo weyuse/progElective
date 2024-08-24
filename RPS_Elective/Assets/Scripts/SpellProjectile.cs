@@ -6,7 +6,7 @@ public class SpellProjectile : MonoBehaviour
 {
     public string magicType = "empty";
     private int baseDamage = 10;
-       
+   
     void Start()
     {
         
@@ -45,6 +45,7 @@ public class SpellProjectile : MonoBehaviour
         GetComponent<Renderer>().material.color = color;
     }
 
+  
     // Checking if the missile hits a wizard still tagged as boat
     void OnTriggerEnter(Collider other)
     {
@@ -53,14 +54,12 @@ public class SpellProjectile : MonoBehaviour
             PirateShipController targetShip = other.GetComponent<PirateShipController>();
             if (targetShip != null)
             {
-                Debug.Log("hit a wizard");
                 HitTarget(targetShip);
-            }
+            }   
         }
         else if (other.CompareTag("background")) 
         {
             Destroy(gameObject);
-            Debug.Log("Miss");
         }
     }
 

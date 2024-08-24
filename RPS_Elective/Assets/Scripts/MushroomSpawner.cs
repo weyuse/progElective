@@ -8,8 +8,8 @@ public class MushroomSpawner : MonoBehaviour
     public GameObject mushroomPrefab;
 
     // Interval between spawns in seconds
-    public float spawnInterval = 5f; 
-    private float timer = 20f;
+    public float spawnInterval = 2f; 
+    private float timer = 5f;
     //Taking the arena size from the pirate controller
     private PirateShipController shipController;
 
@@ -59,7 +59,6 @@ public class MushroomSpawner : MonoBehaviour
             // instantiate the mushroom at the random position - quaternion meaning keeping the rotation as the prefab dictates
             Instantiate(mushroomPrefab, randomPoint, Quaternion.identity);
 
-            Debug.Log("Mushroom");
         }
     }
 }

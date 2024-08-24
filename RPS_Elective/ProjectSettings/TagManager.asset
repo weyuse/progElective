@@ -9,6 +9,7 @@ TagManager:
   - magicMushroom
   - missile
   - eyes
+  - background
   layers:
   - Default
   - TransparentFX
