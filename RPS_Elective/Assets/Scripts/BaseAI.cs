@@ -14,8 +14,7 @@ public class ScannedRobotEvent {
     public string MagicType; 
     }
 
-//it complained unless I added monobehaviour
-public class BaseAI
+public class BaseAI : MonoBehaviour
 {
     public PirateShipController Ship = null;
 
@@ -48,9 +47,9 @@ public class BaseAI
         yield return Ship.__GetMushroom();
     }
 
-    public IEnumerator Patrol()
+    public IEnumerator Patrol(Transform target)
     {
-        yield return Ship.__Patrol();
+        yield return Ship.__Patrol(target);
     }
     public IEnumerator SeekNewPosition(Transform target, float seekRadius)
     {
