@@ -52,9 +52,9 @@ public class BaseAI
     {
         yield return Ship.__Patrol();
     }
-    public IEnumerator SeekNewPosition(Transform target)
+    public IEnumerator SeekNewPosition(Transform target, float seekRadius)
     {
-        yield return Ship.__SeekNewPosition(target);
+        yield return Ship.__SeekNewPosition(target, seekRadius);
     }
 
     public virtual IEnumerator RunAI() {

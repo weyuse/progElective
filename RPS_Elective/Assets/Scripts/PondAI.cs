@@ -5,10 +5,11 @@ using UnityEngine.AI;
 public class PondAI : BaseAI
 {
 
-    private float healthThresholdLow = 800;
-    private float healthThresholdMedium = 950;
-    private string action = "patrol";
+    private float healthThresholdLow = 100;
+    private float healthThresholdMedium = 200;
+    private string action;
     private Transform targetTransform;
+    public float seekRadius;
 
 
     private void Start()
@@ -21,20 +22,35 @@ public class PondAI : BaseAI
     {
         while (true)
         {
+            if (Ship != null)
+            {
+                Ship.PerformRaycastDetection();
+            }
+
             Debug.Log("Current Action:" + action);
                         
             switch (action)
             {
                 case "engage":
-                    yield return Engage(targetTransform);
+                    if (targetTransform != null)
+                    {
+                        yield return Engage(targetTransform);
+                    }
+                    ResetTargetInformation();
                     break;
 
                 case "flee":
                     yield return Flee(targetTransform);
+                    // Reset target information after each action cycle
+                    ResetTargetInformation();
+                    yield return Patrol();
                     break;
 
                 case "findMushroom":
                     yield return GetMushroom();
+                    // Reset target information after each action cycle
+                    ResetTargetInformation();
+                    yield return Patrol();
                     break;
 
                 case "patrol":
@@ -45,14 +61,18 @@ public class PondAI : BaseAI
                     action = "patrol";
                     break;
             }
-           
 
-            yield return null;  
+
+            yield return new WaitForSeconds(0.5f);
         }
        
     }
-    
 
+    private void ResetTargetInformation()
+    {
+        Debug.Log("Resetting target information...");
+        targetTransform = null; // Clear the target reference
+    }
 
 
     public override void OnScannedRobot(ScannedRobotEvent e)
@@ -73,11 +93,13 @@ public class PondAI : BaseAI
             else
             {
                 Debug.Log("no WizardBody part found");
+                ResetTargetInformation();
             }
         }
-
-
-
+        else
+        {
+            ResetTargetInformation();
+        }
     }
 
     private bool IsAdvantageousMagic(string myMagicType, string enemyMagicType)
@@ -94,7 +116,21 @@ public class PondAI : BaseAI
 
     public string DetermineAction(float health, string myMagicType, string enemyMagicType)
     {
-                
+
+        // higher health wizards get closer
+        if (health <= healthThresholdLow)
+        {
+            seekRadius = 500f; 
+        }
+        else if (health > healthThresholdLow && health <= healthThresholdMedium)
+        {
+            seekRadius = 1000f; 
+        }
+        else
+        {
+            seekRadius = 1500f; 
+        }
+
         //magic advantage makes them confident
         if (IsAdvantageousMagic(myMagicType, enemyMagicType))
         {
