@@ -32,6 +32,8 @@ public class PirateShipController : MonoBehaviour
     public Transform ProjectileFrontSpawnPoint = null;
     public GameObject magicSpellPrefab = null;
 
+    // Animation
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +42,7 @@ public class PirateShipController : MonoBehaviour
         currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
         Debug.Log(currentMagicType);
         wizardMover = this.GetComponent<NavMeshAgent>();
+        animator = this.GetComponent<Animator>();
     }
 
     // Assigns the AI that steers this instance
@@ -94,6 +97,7 @@ public class PirateShipController : MonoBehaviour
     public void hit(int damage)
     {
         health -= damage;
+        animator.SetTrigger("tookDamage");
         if (health <= 0)
         {
             Debug.Log("wizard dead");
@@ -104,6 +108,7 @@ public class PirateShipController : MonoBehaviour
 
     private void killWiz()
     {
+        animator.SetTrigger("doDeath");
         Destroy(gameObject, 1.0f);
     }
 
