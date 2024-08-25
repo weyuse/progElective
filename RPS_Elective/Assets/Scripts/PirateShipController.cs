@@ -154,10 +154,21 @@ public class PirateShipController : MonoBehaviour
             yield break;
         }
 
-        while (wizardMover.pathPending || (wizardMover.remainingDistance > wizardMover.stoppingDistance && target != null))
+        while (wizardMover.pathPending || (wizardMover.remainingDistance > wizardMover.stoppingDistance))
         {
-            transform.LookAt(target); // Keep looking at the target
-            yield return null; // Wait until the next frame
+            if (target == null)
+            {
+                Debug.Log("Target is no longer visible, resetting path.");
+                wizardMover.ResetPath();
+                yield break;
+            }
+
+            if (target != null)
+            {
+                transform.LookAt(target);
+            }
+
+            yield return null; 
         }
 
         yield break; 

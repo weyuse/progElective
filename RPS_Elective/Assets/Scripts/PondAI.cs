@@ -28,7 +28,7 @@ public class PondAI : BaseAI
     public void PerformVisionConeDetection()
     {
         targetSpotted = false;
-        //targetTransform = null;
+        targetTransform = null;
 
         Collider ownCollider = GetComponent<Collider>();
         if (ownCollider == null)
@@ -87,6 +87,7 @@ public class PondAI : BaseAI
                 }
             }
         }
+        targetSpotted = false;
     }
     // Visualize the vision cone using Gizmos
     private void OnDrawGizmos()
@@ -198,7 +199,7 @@ public class PondAI : BaseAI
         if (health > healthThresholdMedium)
         {
             seekRadius = 100f; // Smaller radius, gets closer
-            spaceGiven = 20f;
+            spaceGiven = 50f;
             Debug.Log("High health detected, engaging with close seek radius.");
             return "engage";
         }
@@ -207,7 +208,7 @@ public class PondAI : BaseAI
         if (health > healthThresholdLow && health <= healthThresholdMedium)
         {
             seekRadius = 150f;
-            spaceGiven = 50f;// Medium radius
+            spaceGiven = 75f;// Medium radius
             if (IsAdvantageousMagic(myMagicType, enemyMagicType))
             {
                 Debug.Log("Medium health with magic advantage, engaging with medium seek radius.");
