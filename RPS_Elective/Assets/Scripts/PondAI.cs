@@ -158,7 +158,6 @@ public class PondAI : BaseAI
 
     private bool IsAdvantageousMagic(string myMagicType, string enemyMagicType)
     {
-        Debug.Log(enemyMagicType);
         if ((myMagicType == "Fire" && enemyMagicType == "Leaf") ||
             (myMagicType == "Leaf" && enemyMagicType == "Water") ||
             (myMagicType == "Water" && enemyMagicType == "Fire"))
@@ -170,7 +169,6 @@ public class PondAI : BaseAI
 
     private bool IsSameMagic(string myMagicType, string enemyMagicType)
     {
-        Debug.Log(enemyMagicType);
         if ((myMagicType == "Fire" && enemyMagicType == "Fire") ||
             (myMagicType == "Leaf" && enemyMagicType == "Leaf") ||
             (myMagicType == "Water" && enemyMagicType == "Water"))

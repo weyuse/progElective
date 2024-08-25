@@ -60,7 +60,15 @@ public class PirateShipController : MonoBehaviour
 
     void Update()
     {
-      
+        // Check if the agent is moving and set the walking animation trigger
+        if (wizardMover.velocity.magnitude > 0.1f && wizardMover.remainingDistance > wizardMover.stoppingDistance)
+        {
+            animator.SetBool("isMoving", true); // Ensure parameter name matches Animator Controller
+        }
+        else
+        {
+            animator.SetBool("isMoving", false);
+        }
     }
     
     private void SetDestination(Vector3 destination)
@@ -108,8 +116,9 @@ public class PirateShipController : MonoBehaviour
 
     private void killWiz()
     {
+        wizardMover.ResetPath();
         animator.SetTrigger("doDeath");
-        Destroy(gameObject, 1.0f);
+        Destroy(gameObject, 2.0f);
     }
 
     public string GetCurrentMagicType()
@@ -190,6 +199,7 @@ public class PirateShipController : MonoBehaviour
         }
         canCast = false;
         GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
+        animator.SetTrigger("makeAttack");
         yield return new WaitForFixedUpdate();
         SpellProjectile spellProjectile = newInstance.GetComponent<SpellProjectile>();
 
@@ -333,6 +343,7 @@ public class PirateShipController : MonoBehaviour
                 string currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
                 this.GetComponent<PirateShipController>().currentMagicType = currentMagicType;
                 Debug.Log("Mushroom picked");
+                animator.SetTrigger("getMushroom");
                 Destroy(randomMushroomPoint);
             }
         }
