@@ -3,15 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 
-// The vehicle that will do battle. This is the same for every participant in the arena.
-// Its 'brains' (the AI you'll write) will be assigned by the <seealso cref="CompetitionManager"/>
-
 public class PirateShipController : MonoBehaviour
 {
-    // spell spawn area
-    public Transform ProjectileFrontSpawnPoint = null;
-    public GameObject magicSpellPrefab = null;
-
     //the AI that will control this ship. Is set by <seealso cref="CompetitionManager"/>.
     private BaseAI ai = null;
         
@@ -20,7 +13,7 @@ public class PirateShipController : MonoBehaviour
     public Vector3 mapMaxBounds;
 
     //health 
-    private int health = 500;
+    private int health = 150;
 
     //magic types
     private string[] magicTypes = { "Fire", "Water", "Leaf" };
@@ -32,117 +25,41 @@ public class PirateShipController : MonoBehaviour
     public Transform targetDestination;
     public NavMeshAgent wizardMover;
     public Vector3 otherPosition;
-    //private float RotationSpeed;
 
-    //cooldown for shooting to avoid machine-gun fire
+    //casting Components
     private float castingCooldown = 1f;
     private bool canCast = true;
+    public Transform ProjectileFrontSpawnPoint = null;
+    public GameObject magicSpellPrefab = null;
 
-    public Transform spellSource;
-    public float detectionRange = 1000f; 
-    public float detectionAngle = 45f;
-    public LayerMask visionMask;
 
     // Start is called before the first frame update
     void Start()
     {
         CalculateNavMeshBounds();
-
-        //random magic type assigned at the start
         currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
         Debug.Log(currentMagicType);
-
-        //sets the nav agent to this game object
         wizardMover = this.GetComponent<NavMeshAgent>();
-        //RotationSpeed = wizardMover.angularSpeed;
-
     }
 
     // Assigns the AI that steers this instance
-
-    public void SetAI(BaseAI _ai) {
+    public void SetAI(BaseAI _ai) 
+    {
         ai = _ai;
         ai.Ship = this;
     }
-
+        
     // Tell this ship to start battling
-
-    public void StartBattle() {
+    public void StartBattle() 
+    {
         StartCoroutine(ai.RunAI());
     }
 
-    public void PerformVisionConeDetection()
+    void Update()
     {
-        if (spellSource == null)
-        {
-            Debug.LogWarning("SpellSource is not assigned.");
-            return;
-        }
-
-        // Get all colliders within the detection range
-        Collider[] hitColliders = Physics.OverlapSphere(spellSource.position, detectionRange);
-
-        foreach (var collider in hitColliders)
-        {
-            // Check if the collider is a potential target
-            if (collider.CompareTag("Boat"))
-            {
-                // Calculate the direction to the target
-                Vector3 directionToTarget = (collider.transform.position - spellSource.position).normalized;
-                float angleToTarget = Vector3.Angle(spellSource.forward, directionToTarget);
-
-                // Check if the target is within the vision cone
-                if (angleToTarget < detectionAngle)
-                {
-                    // Perform a raycast to check line of sight
-                    RaycastHit hit;
-                    if (Physics.Raycast(spellSource.position, directionToTarget, out hit, detectionRange))
-                    {
-                        // Ensure that the raycast hit the target and not an obstacle
-                        if (hit.collider == collider)
-                        {
-                            Debug.Log("Boat detected within vision cone and line of sight: " + collider.transform.name);
-
-                            // Create a ScannedRobotEvent and handle it
-                            ScannedRobotEvent scannedRobotEvent = new ScannedRobotEvent
-                            {
-                                Distance = Vector3.Distance(spellSource.position, collider.transform.position),
-                                Name = collider.transform.name,
-                                Position = collider.transform.position
-                            };
-
-                            PirateShipController otherShip = collider.transform.root.GetComponent<PirateShipController>();
-                            if (otherShip != null)
-                            {
-                                scannedRobotEvent.MagicType = otherShip.currentMagicType;
-                                if (ai != null)
-                                {
-                                    ai.OnScannedRobot(scannedRobotEvent);
-                                }
-                            }
-                            else
-                            {
-                                Debug.LogWarning("PirateShipController component not found on the root GameObject.");
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log("Vision cone detected a boat, but it is behind an obstacle.");
-                        }
-                    }
-                }
-            }
-        }
+      
     }
 
-
-        // Modified FixedUpdate to call the new method
-        void FixedUpdate()
-        { 
-            PerformVisionConeDetection();
-        }
-
-    // Method to set a new destination for the wizardMover
     private void SetDestination(Vector3 destination)
     {
         if (wizardMover != null)
@@ -151,7 +68,7 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
-        // Calculate the bounds of the NavMesh through each vertex 
+    // Calculate the bounds of the NavMesh through each vertex 
     private void CalculateNavMeshBounds()
     {
         NavMeshTriangulation navMeshData = NavMesh.CalculateTriangulation();
@@ -177,7 +94,6 @@ public class PirateShipController : MonoBehaviour
     public void hit(int damage)
     {
         health -= damage;
-        //Debug.Log("Wizard Hit Damage:" + damage + "Remaining health:" + health);
         if (health <= 0)
         {
             Debug.Log("wizard dead");
@@ -191,7 +107,6 @@ public class PirateShipController : MonoBehaviour
         Destroy(gameObject, 1.0f);
     }
 
-    //telling the spell projectile script whats going on over here
     public string GetCurrentMagicType()
     {
         return currentMagicType;
@@ -202,34 +117,64 @@ public class PirateShipController : MonoBehaviour
         return health;
     }
 
-   
-    // Sit and hold still for one (fixed!) update
-
     public IEnumerator __DoNothing() {
         yield return new WaitForFixedUpdate();
     }
 
+    //Moving after firing but keeping a certain distance depending on health
+
     public IEnumerator __SeekNewPosition(Transform target, float seekRadius)
     {
-        wizardMover.isStopped = false;
-        yield break;
+        if (target == null)
+        {
+            Debug.LogWarning("Target is null. Aborting seek new position.");
+            yield break; 
+        }
+
+        int maxAttempts = 10; 
+        bool foundValidPoint = false;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * seekRadius;
+            randomDirection += target.position;
+            NavMeshHit hit;
+
+            if (NavMesh.SamplePosition(randomDirection, out hit, seekRadius, NavMesh.AllAreas))
+            {
+                wizardMover.SetDestination(hit.position);
+                foundValidPoint = true;
+                break; 
+            }
+        }
+
+        if (!foundValidPoint)
+        {
+            Debug.LogWarning("Failed to find a valid position on the NavMesh within seekRadius after max attempts.");
+            yield break;
+        }
+
+        while (wizardMover.pathPending || (wizardMover.remainingDistance > wizardMover.stoppingDistance && target != null))
+        {
+            transform.LookAt(target); // Keep looking at the target
+            yield return null; // Wait until the next frame
+        }
+
+        yield break; 
     }
+   
 
-
-    // Fire front
-
+    //Shooting as long as casting is off cooldown
     public IEnumerator __FireFront(float power)
     {
+        
         if (!canCast)
         {
             yield break; 
         }
-
         canCast = false;
-
         GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         yield return new WaitForFixedUpdate();
-
         SpellProjectile spellProjectile = newInstance.GetComponent<SpellProjectile>();
 
         if (spellProjectile != null)
@@ -239,84 +184,83 @@ public class PirateShipController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(castingCooldown);
-
         canCast = true;
         
     }
 
  
+    // A random point a certain distance away from the target spotted
     public IEnumerator __Flee(Transform target)
     {
-        // Distance away from thing its fleeing from
-        float fleeDistance = 150f;
-        // avoiding an infinite loop if it can't find anywhere to flee to
+        float fleeDistance = 200f;
         int maxAttempts = 10; 
         bool foundValidPoint = false;
 
         for (int i = 0; i < maxAttempts; i++)
         {
-            // random direction
             Vector3 randomDirection = Random.insideUnitSphere * fleeDistance;
-            // away from targets position
             randomDirection += target.position;
-
-            // Check if the random point is on the NavMesh
             NavMeshHit hit;
 
             if (NavMesh.SamplePosition(randomDirection, out hit, fleeDistance, NavMesh.AllAreas))
             {
-                // Set the NavMeshAgent's destination to the valid point found
                 setDestination(hit.position);
                 foundValidPoint = true;
                 break;
             }
         }
 
-        
         while (wizardMover.pathPending || wizardMover.remainingDistance > wizardMover.stoppingDistance)
         {
-            // dont stop fleeing if not reached flee point
-            yield return null;
+           yield return null;
         }
 
     }
 
-
+    //Patrol checking if a target has been spotted where possible
     public IEnumerator __Patrol()
     {
-        // Get a random point on the NavMesh
-        Vector3 randomDestination = GetRandomPointOnNavMesh();
-        setDestination(randomDestination);
-
-        // Wait until dude reaches the destination
-        while (!wizardMover.pathPending && wizardMover.remainingDistance > wizardMover.stoppingDistance)
+        while (true)
         {
-            yield return null; 
-        }
+      
+            if (ai.targetSpotted) 
+            {
+                wizardMover.ResetPath(); 
+                yield break; 
+            }
 
-        // Wait for a short duration before choosing a new destination
-        yield return new WaitForSeconds(2f);
-        
+            Vector3 randomDestination = GetRandomPointOnNavMesh();
+            setDestination(randomDestination);
+            
+            while (!ai.targetSpotted && (wizardMover.pathPending || wizardMover.remainingDistance > wizardMover.stoppingDistance))
+            {
+                if (ai.targetSpotted)
+                {
+                    wizardMover.ResetPath(); 
+                    yield break; 
+                }
+
+                yield return null; 
+            }
+
+            if (!ai.targetSpotted)
+            {
+                yield return new WaitForSeconds(2f); 
+            }
+        }
     }
 
     private Vector3 GetRandomPointOnNavMesh()
     {
-        // Generate a random point within the map bounds
-        Vector3 randomPoint = new Vector3(
-            Random.Range(mapMinBounds.x, mapMaxBounds.x), 0f, Random.Range(mapMinBounds.z, mapMaxBounds.z)
-        );
-
+        Vector3 randomPoint = new Vector3(Random.Range(mapMinBounds.x, mapMaxBounds.x), 0f, Random.Range(mapMinBounds.z, mapMaxBounds.z));
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomPoint, out hit, 100f, NavMesh.AllAreas))
         {
             return hit.position;
         }
-
-        // If no valid point is found, return the current position
         return transform.position;
     }
 
-    //moving the wizard so long as it has a target to move to 
     private void setDestination(Vector3 destination)
     {
         if (wizardMover != null)
@@ -325,50 +269,32 @@ public class PirateShipController : MonoBehaviour
         }
     }
 
+    //Looks at the target and shoots them
     public IEnumerator __Engage(Transform target)
     {
-        wizardMover.isStopped = true;
-        float seekRadius = 10f;
-        float engageDistance = 50f;
-
-        while (true)
+        if (target == null) 
         {
-            if (target == null || Vector3.Distance(transform.position, target.position) > engageDistance)
-            {
-                Debug.Log("Target is null or out of range, stopping engagement.");
-                wizardMover.isStopped = false;
-                yield return StartCoroutine(__Patrol()); // Switch to patrol if the target is lost
-                yield break;
-            }
-
-            Debug.Log($"Engaging target at position: {target.position}");
-
-            transform.LookAt(target);
-            yield return StartCoroutine(__FireFront(1));
-
-            yield return StartCoroutine(__SeekNewPosition(target, seekRadius));
-            yield break; // Break engagement after one cycle to reevaluate
+            yield break; 
         }
-
+        
+        transform.LookAt(target.position);
+        yield return StartCoroutine(__FireFront(1)); 
+        yield break;        
     }
 
+    //Randomly Selects a mushroom in the scene and moves towards it as long as the timer isnt 0
     public IEnumerator __GetMushroom()
     {
         GameObject[] mushroomPoint = GameObject.FindGameObjectsWithTag("magicMushroom");
         if (mushroomPoint.Length > 0)
         {
             GameObject randomMushroomPoint = mushroomPoint[Random.Range(0, mushroomPoint.Length)];
-            // Set the target destination to a random point in the array
             setDestination(randomMushroomPoint.transform.position);
-
-            // Variables to handle timeout and retry
-            float maxTimeToReach = 15f; // Maximum time to try to reach the mushroom
+            float maxTimeToReach = 15f; 
             float startTime = Time.time;
 
-            // Continue trying to reach the mushroom until it succeeds or times out
             while (wizardMover.pathPending || wizardMover.remainingDistance > wizardMover.stoppingDistance)
             {
-                // Check if time exceeds the maximum time allowed
                 if (Time.time - startTime > maxTimeToReach)
                 {
                     Debug.Log("Giving up on reaching the mushroom, too far or unreachable.");
@@ -377,24 +303,22 @@ public class PirateShipController : MonoBehaviour
 
                yield return null;
             }
-            // Successfully reached the mushroom
             Debug.Log("Reached the mushroom.");
+
             if (randomMushroomPoint != null)
             {
                 string[] magicTypes = { "Fire", "Water", "Leaf" };
                 string currentMagicType = magicTypes[Random.Range(0, magicTypes.Length)];
-
-                // Update the current magic type
                 this.GetComponent<PirateShipController>().currentMagicType = currentMagicType;
                 Debug.Log("Mushroom picked");
-
-                // Destroy the mushroom after collecting it
                 Destroy(randomMushroomPoint);
             }
         }
+
         else
         {
             Debug.LogWarning("No mushrooms found in the scene.");
+            yield return null;
         }
 
         yield return new WaitForFixedUpdate();

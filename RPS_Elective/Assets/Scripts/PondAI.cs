@@ -5,52 +5,134 @@ using UnityEngine.AI;
 public class PondAI : BaseAI
 {
 
-    private float healthThresholdLow = 100;
-    private float healthThresholdMedium = 200;
+    private float healthThresholdLow = 50;
+    private float healthThresholdMedium = 100;
     private string action;
     private Transform targetTransform;
-    public float seekRadius;
-
+    public float seekRadius = 150f;
+    public float detectionAngle = 30f;
+    public float detectionRange = 800f;
+    
 
     private void Start()
     {
-        //agent = GetComponent<NavMeshAgent>();
+       
+    }
 
+    private void Update()
+    {
+        PerformVisionConeDetection();
+    }
+
+    public void PerformVisionConeDetection()
+    {
+        targetSpotted = false;
+        //targetTransform = null;
+
+        Collider ownCollider = GetComponent<Collider>();
+        if (ownCollider == null)
+        {
+            Debug.LogWarning("Own collider is not found. Make sure this AI has a collider.");
+            return;
+        }
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRange);
+
+        foreach (var collider in hitColliders)
+        {
+            if (collider == ownCollider) continue;
+
+            if (collider.CompareTag("Boat"))
+            {
+                Vector3 directionToTarget = (collider.transform.position - transform.position).normalized;
+                float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
+
+                if (angleToTarget < detectionAngle)
+                {
+                    Vector3 rayOrigin = transform.position;
+                    Debug.DrawRay(rayOrigin, directionToTarget * detectionRange, Color.red, 0.1f);
+
+                    RaycastHit hit;
+                    if (Physics.Raycast(rayOrigin, directionToTarget, out hit, detectionRange))
+                    {
+                        Debug.Log("Raycast hit: " + hit.collider.name);
+
+                        if (hit.collider.CompareTag("background"))
+                        {
+                            continue;
+                        }
+
+                        if (hit.collider == collider)
+                        {
+                            targetSpotted = true;
+                            targetTransform = collider.transform;
+                            PirateShipController shipController = hit.collider.GetComponentInParent<PirateShipController>();
+                            string magicType = "Unknown";
+                            if (shipController != null)
+                            {
+                                
+                                magicType = shipController.GetCurrentMagicType();
+                            }
+                            ScannedRobotEvent scannedEvent = new ScannedRobotEvent
+                            {
+                                Name = collider.name,
+                                Position = collider.transform.position,
+                                MagicType = magicType
+                            };
+                            OnScannedRobot(scannedEvent);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // Visualize the vision cone using Gizmos
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return; // Only draw when the game is running
+
+        // Draw detection range
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+        // Draw vision cone
+        Vector3 leftBoundary = Quaternion.Euler(0, -detectionAngle, 0) * transform.forward * detectionRange;
+        Vector3 rightBoundary = Quaternion.Euler(0, detectionAngle, 0) * transform.forward * detectionRange;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + leftBoundary);
+        Gizmos.DrawLine(transform.position, transform.position + rightBoundary);
     }
 
     public override IEnumerator RunAI()
     {
         while (true)
         {
-            if (Ship != null)
-            {
-                Ship.PerformVisionConeDetection();
-            }
-
             Debug.Log("Current Action:" + action);
-                        
+
+            if (targetTransform == null)
+            {
+                yield return Patrol();
+            }
+            
+                                   
             switch (action)
             {
-                case "engage":
-                    //if (targetTransform != null)
-                    //{
-                    //    yield return Engage(targetTransform);
-                    //}
-                    //ResetTargetInformation();
+                case "engage":                    
+                    yield return Engage(targetTransform);
+                    yield return SeekNewPosition(targetTransform, seekRadius);
+                    targetTransform = null;
                     break;
 
                 case "flee":
                     yield return Flee(targetTransform);
-                    // Reset target information after each action cycle
-                    //ResetTargetInformation();
-                    yield return Patrol();
+                    targetTransform = null;
                     break;
 
                 case "findMushroom":
+                    targetTransform = null;
                     yield return GetMushroom();
-                    // Reset target information after each action cycle
-                    //ResetTargetInformation();
-                    yield return Patrol();
                     break;
 
                 case "patrol":
@@ -61,9 +143,7 @@ public class PondAI : BaseAI
                     action = "patrol";
                     break;
             }
-
-
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
         }
        
     }
@@ -71,40 +151,26 @@ public class PondAI : BaseAI
     private void ResetTargetInformation()
     {
         Debug.Log("Resetting target information... SIKE");
-        //targetTransform = null; // Clear the target reference
+        targetTransform = null; // Clear the target reference
     }
 
 
     public override void OnScannedRobot(ScannedRobotEvent e)
     {
-        GameObject targetObject = GameObject.Find(e.Name);
-        Debug.Log($"OnScannedRobot called with target: {e.Name}, Distance: {e.Distance}, MagicType: {e.MagicType}");
-        if (targetObject != null && targetObject.CompareTag("Boat"))
-        {
-            Transform wizardBody = targetObject.transform.Find("WizardBody");
-            if (wizardBody != null)
-            {
-                targetTransform = wizardBody;
-                float health = Ship.GetHealth();
-                string myMagicType = Ship.GetCurrentMagicType();
-                string enemyMagicType = e.MagicType;
-                Debug.Log("About to determine action");
-                action = DetermineAction(health, myMagicType, enemyMagicType);
-            }
-            else
-            {
-                Debug.Log("no WizardBody part found");
-                ResetTargetInformation();
-            }
-        }
-        else
-        {
-            ResetTargetInformation();
-        }
+       
+       // GameObject targetObject = GameObject.Find(e.Name);
+        //Transform wizardBody = targetObject.transform.Find("WizardBody");
+        //targetTransform = wizardBody;
+        float health = Ship.GetHealth();
+        string myMagicType = Ship.GetCurrentMagicType();
+        string enemyMagicType = e.MagicType;
+        action = DetermineAction(health, myMagicType, enemyMagicType);
+                
     }
 
     private bool IsAdvantageousMagic(string myMagicType, string enemyMagicType)
     {
+        Debug.Log(enemyMagicType);
         if ((myMagicType == "Fire" && enemyMagicType == "Leaf") ||
             (myMagicType == "Leaf" && enemyMagicType == "Water") ||
             (myMagicType == "Water" && enemyMagicType == "Fire"))
@@ -114,46 +180,68 @@ public class PondAI : BaseAI
         return false;
     }
 
+    private bool IsSameMagic(string myMagicType, string enemyMagicType)
+    {
+        Debug.Log(enemyMagicType);
+        if ((myMagicType == "Fire" && enemyMagicType == "Fire") ||
+            (myMagicType == "Leaf" && enemyMagicType == "Leaf") ||
+            (myMagicType == "Water" && enemyMagicType == "Water"))
+        {
+            return true;
+        }
+        return false;
+    }
 
     public string DetermineAction(float health, string myMagicType, string enemyMagicType)
     {
-
-        // higher health wizards get closer
-        if (health <= healthThresholdLow)
+        // High health wizards always engage and get closer
+        if (health > healthThresholdMedium)
         {
-            seekRadius = 500f; 
-        }
-        else if (health > healthThresholdLow && health <= healthThresholdMedium)
-        {
-            seekRadius = 1000f; 
-        }
-        else
-        {
-            seekRadius = 1500f; 
+            seekRadius = 100f; // Smaller radius, gets closer
+            Debug.Log("High health detected, engaging with close seek radius.");
+            return "engage";
         }
 
-        //magic advantage makes them confident
-        if (IsAdvantageousMagic(myMagicType, enemyMagicType))
+        // Medium health wizards engage if they have an advantage or aren't at a disadvantage
+        if (health > healthThresholdLow && health <= healthThresholdMedium)
         {
+            seekRadius = 150f; // Medium radius
+            if (IsAdvantageousMagic(myMagicType, enemyMagicType))
+            {
+                Debug.Log("Medium health with magic advantage, engaging with medium seek radius.");
                 return "engage";
-        }
-            
-            //low health wizard is always a coward
-            if (health <= healthThresholdLow)
-            {
-                return "flee";
             }
-            //medium health wizard will try and find an advantage
-            else if (health > healthThresholdLow && health <= healthThresholdMedium)
+            else if (IsSameMagic(myMagicType, enemyMagicType)) // Check if both have the same magic type
             {
-                return "findMushroom";
+                Debug.Log("Medium health, same magic type detected, engaging with medium seek radius.");
+                return "engage";
             }
-            //high health wizard will try their luck
             else
             {
+                Debug.Log("Medium health, at disadvantage, finding mushroom.");
+                return "findMushroom";
+            }
+        }
+
+        // Low health wizards engage only if they have an advantage, otherwise flee
+        if (health <= healthThresholdLow)
+        {
+            seekRadius = 200f; // Larger radius, keeps distance
+            if (IsAdvantageousMagic(myMagicType, enemyMagicType))
+            {
+                Debug.Log("Low health with magic advantage, engaging with large seek radius.");
                 return "engage";
             }
-       
+            else
+            {
+                Debug.Log("Low health, no advantage, fleeing.");
+                return "flee";
+            }
+        }
+
+        // Fallback to patrol action if none of the conditions match
+        Debug.Log("Defaulting to patrol.");
+        return "patrol";
     }
 }
    
