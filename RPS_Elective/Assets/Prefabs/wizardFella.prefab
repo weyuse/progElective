@@ -1258,7 +1258,7 @@ GameObject:
   - component: {fileID: 4361336274114874467}
   m_Layer: 0
   m_Name: WizardBody
-  m_TagString: Untagged
+  m_TagString: Boat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1271,7 +1271,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5382700633143697253}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.01, y: 0.525, z: -0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5384145738076926331}
@@ -1404,10 +1404,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 2
-  m_Height: 3
+  m_Radius: 0.5
+  m_Height: 4
   m_Direction: 1
-  m_Center: {x: 0.000000038146972, y: 0.89015466, z: -0.09283928}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5382711257474296291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1997,7 +1997,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5382892350593215331}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: -8.6}
   m_LocalScale: {x: 30, y: 30, z: 30}
   m_Children:
   - {fileID: 5384321465969256047}
@@ -2041,7 +2041,6 @@ MonoBehaviour:
   targetDestination: {fileID: 0}
   wizardMover: {fileID: -1286775573207121572}
   otherPosition: {x: 0, y: 0, z: 0}
-  spellSource: {fileID: 7081216380134432434}
 --- !u!195 &-1286775573207121572
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2051,13 +2050,13 @@ NavMeshAgent:
   m_GameObject: {fileID: 5382892350593215331}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.2
   m_Speed: 200
   m_Acceleration: 200
   avoidancePriority: 50
   m_AngularSpeed: 150
   m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
+  m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
@@ -2606,7 +2605,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8210757269847105999}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.224, y: 1.134, z: 1.65}
+  m_LocalPosition: {x: -0.028, y: 1.07, z: 0.37}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 5384145738076926331}
@@ -2670,5 +2669,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
   m_Center: {x: -0.000061035156, y: -0.00000047683716, z: 0.000030517578}
