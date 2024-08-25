@@ -6,17 +6,21 @@ using UnityEngine.AI;
 public class MushroomSpawner : MonoBehaviour
 {
     public GameObject mushroomPrefab;
-
-    // Interval between spawns in seconds
-    public float spawnInterval = 2f; 
-    private float timer = 5f;
-    //Taking the arena size from the pirate controller
+    private float spawnInterval = 5f; 
+    private float timer = 0f;
     private PirateShipController shipController;
+    private List<GameObject> mushrooms = new List<GameObject>();
+    private int maxMushrooms = 4;
 
     void Start()
     {
         shipController = FindObjectOfType<PirateShipController>();
-        timer = spawnInterval;
+        if (shipController == null)
+        {
+            Debug.LogError("PirateShipController not found in the scene.");
+            return;
+        }
+        timer = spawnInterval; 
     }
 
     private Vector3 GetRandomPointOnNavMesh(Vector3 minBounds, Vector3 maxBounds)
@@ -29,7 +33,7 @@ public class MushroomSpawner : MonoBehaviour
                 Random.Range(minBounds.z, maxBounds.z)
             );
 
-            if (UnityEngine.AI.NavMesh.SamplePosition(randomPoint, out UnityEngine.AI.NavMeshHit hit, 100f, UnityEngine.AI.NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 100f, NavMesh.AllAreas))
             {
                 return hit.position;
             }
@@ -39,26 +43,42 @@ public class MushroomSpawner : MonoBehaviour
         return transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
-        // counting till the set time
         timer += Time.deltaTime;
+        mushrooms.RemoveAll(mushroom => mushroom == null);
 
-        // waiting for timer to reach the required amount of seconds
         if (timer >= spawnInterval)
         {
-            // reset the timer now that somethings spawning
             timer = 0f;
 
-            // generate random spawn position within the arena with a 3d vector
-            Vector3 randomPoint = GetRandomPointOnNavMesh(shipController.mapMinBounds, shipController.mapMaxBounds);
+            if (mushrooms.Count < maxMushrooms)
+            {
+                Vector3 randomPoint = GetRandomPointOnNavMesh(shipController.mapMinBounds, shipController.mapMaxBounds);
+                GameObject mushroom = Instantiate(mushroomPrefab, randomPoint, Quaternion.identity);
+                mushrooms.Add(mushroom);
+            }
 
-
-            // instantiate the mushroom at the random position - quaternion meaning keeping the rotation as the prefab dictates
-            Instantiate(mushroomPrefab, randomPoint, Quaternion.identity);
-
+            if (mushrooms.Count >= maxMushrooms)
+            {
+                DestroyRandomMushroom();
+            }
         }
     }
+
+    private void DestroyRandomMushroom()
+    {
+        if (mushrooms.Count > 0)
+        {
+            int randomIndex = Random.Range(0, mushrooms.Count); // Get a random index
+            GameObject mushroomToDestroy = mushrooms[randomIndex];
+            mushrooms.RemoveAt(randomIndex); // Remove from the list
+
+            if (mushroomToDestroy != null)
+            {
+                 Destroy(mushroomToDestroy); // Destroy the mushroom GameObject
+            }
+        }
+    }
+    
 }
