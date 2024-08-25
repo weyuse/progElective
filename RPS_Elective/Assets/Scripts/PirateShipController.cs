@@ -312,7 +312,13 @@ public class PirateShipController : MonoBehaviour
                     yield break; 
                 }
 
-               yield return null;
+                if (randomMushroomPoint == null)
+                {
+                    Debug.LogWarning("Mushroom was destroyed or is no longer available. Searching for another one.");
+                    yield break;
+                }
+
+                yield return null;
             }
             Debug.Log("Reached the mushroom.");
 
