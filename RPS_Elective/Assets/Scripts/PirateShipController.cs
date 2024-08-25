@@ -13,7 +13,7 @@ public class PirateShipController : MonoBehaviour
     public Vector3 mapMaxBounds;
 
     //health 
-    private int health = 150;
+    private int health = 100;
 
     //magic types
     private string[] magicTypes = { "Fire", "Water", "Leaf" };
@@ -59,7 +59,7 @@ public class PirateShipController : MonoBehaviour
     {
       
     }
-
+    
     private void SetDestination(Vector3 destination)
     {
         if (wizardMover != null)

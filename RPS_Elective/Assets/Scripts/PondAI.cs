@@ -5,12 +5,12 @@ using UnityEngine.AI;
 public class PondAI : BaseAI
 {
 
-    private float healthThresholdLow = 50;
-    private float healthThresholdMedium = 100;
+    private float healthThresholdLow = 25;
+    private float healthThresholdMedium = 60;
     private string action;
     private Transform targetTransform;
     public float seekRadius;
-    public float detectionAngle = 30f;
+    public float detectionAngle = 45f;
     public float detectionRange = 800f;
     public float spaceGiven;
     
@@ -89,16 +89,13 @@ public class PondAI : BaseAI
         }
         targetSpotted = false;
     }
-    // Visualize the vision cone using Gizmos
+   
+    //Sight Cone Visualized
     private void OnDrawGizmos()
     {
-        if (!Application.isPlaying) return; // Only draw when the game is running
-
-        // Draw detection range
+        if (!Application.isPlaying) return;
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
-
-        // Draw vision cone
         Vector3 leftBoundary = Quaternion.Euler(0, -detectionAngle, 0) * transform.forward * detectionRange;
         Vector3 rightBoundary = Quaternion.Euler(0, detectionAngle, 0) * transform.forward * detectionRange;
 
@@ -129,6 +126,7 @@ public class PondAI : BaseAI
                 case "flee":
                     yield return Flee(targetTransform);
                     targetTransform = null;
+                    yield return GetMushroom();
                     break;
 
                 case "findMushroom":
@@ -149,19 +147,8 @@ public class PondAI : BaseAI
        
     }
 
-    private void ResetTargetInformation()
-    {
-        Debug.Log("Resetting target information... SIKE");
-        targetTransform = null; // Clear the target reference
-    }
-
-
     public override void OnScannedRobot(ScannedRobotEvent e)
     {
-       
-       // GameObject targetObject = GameObject.Find(e.Name);
-        //Transform wizardBody = targetObject.transform.Find("WizardBody");
-        //targetTransform = wizardBody;
         float health = Ship.GetHealth();
         string myMagicType = Ship.GetCurrentMagicType();
         string enemyMagicType = e.MagicType;
@@ -198,7 +185,7 @@ public class PondAI : BaseAI
         // High health wizards always engage and get closer
         if (health > healthThresholdMedium)
         {
-            seekRadius = 100f; // Smaller radius, gets closer
+            seekRadius = 100f; 
             spaceGiven = 50f;
             Debug.Log("High health detected, engaging with close seek radius.");
             return "engage";
@@ -208,7 +195,7 @@ public class PondAI : BaseAI
         if (health > healthThresholdLow && health <= healthThresholdMedium)
         {
             seekRadius = 150f;
-            spaceGiven = 75f;// Medium radius
+            spaceGiven = 75f;
             if (IsAdvantageousMagic(myMagicType, enemyMagicType))
             {
                 Debug.Log("Medium health with magic advantage, engaging with medium seek radius.");
@@ -230,7 +217,7 @@ public class PondAI : BaseAI
         if (health <= healthThresholdLow)
         {
             seekRadius = 200f;
-            spaceGiven = 100f;// Larger radius, keeps distance
+            spaceGiven = 100f;
             if (IsAdvantageousMagic(myMagicType, enemyMagicType))
             {
                 Debug.Log("Low health with magic advantage, engaging with large seek radius.");
