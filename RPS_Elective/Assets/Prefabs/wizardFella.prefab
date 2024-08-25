@@ -2032,15 +2032,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 964fa78b7cea14e129481d421b7f1500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ProjectileFrontSpawnPoint: {fileID: 7081216380134432434}
-  magicSpellPrefab: {fileID: 2501402490172963987, guid: 6cf9d983923f144efbcd7c98b8ec1870,
-    type: 3}
   mapMinBounds: {x: 0, y: 0, z: 0}
   mapMaxBounds: {x: 0, y: 0, z: 0}
   currentMagicType: 
   targetDestination: {fileID: 0}
   wizardMover: {fileID: -1286775573207121572}
   otherPosition: {x: 0, y: 0, z: 0}
+  ProjectileFrontSpawnPoint: {fileID: 7081216380134432434}
+  magicSpellPrefab: {fileID: 2501402490172963987, guid: 6cf9d983923f144efbcd7c98b8ec1870,
+    type: 3}
 --- !u!195 &-1286775573207121572
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2050,7 +2050,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 5382892350593215331}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.2
+  m_Radius: 0.1
   m_Speed: 200
   m_Acceleration: 200
   avoidancePriority: 50

@@ -5,21 +5,19 @@ using UnityEngine.AI;
 
 
 // The event data that is generated when another participant in the arena was 'seen'
-public class ScannedRobotEvent {
+public class ScannedRobotEvent 
+{
     public string Name;
     public float Distance;
-    //also its position
     public Vector3 Position; 
-    //also its magic type
     public string MagicType; 
-    }
+}
 
 public class BaseAI : MonoBehaviour
 {
     public PirateShipController Ship = null;
-
-    // Another participant was 'seen'. Do something with the info stored in the even data
-
+    public bool targetSpotted;
+ 
     public virtual void OnScannedRobot(ScannedRobotEvent e)
     {
 
@@ -29,8 +27,6 @@ public class BaseAI : MonoBehaviour
     {
         yield return Ship.__FireFront(power);
     }
-
-    // the flee command
 
     public IEnumerator Flee(Transform target)
     {
@@ -47,16 +43,17 @@ public class BaseAI : MonoBehaviour
         yield return Ship.__GetMushroom();
     }
 
-    public IEnumerator Patrol(Transform target)
+    public IEnumerator Patrol()
     {
-        yield return Ship.__Patrol(target);
+        yield return Ship.__Patrol();
     }
     public IEnumerator SeekNewPosition(Transform target, float seekRadius)
     {
         yield return Ship.__SeekNewPosition(target, seekRadius);
     }
 
-    public virtual IEnumerator RunAI() {
+    public virtual IEnumerator RunAI() 
+    {
         yield return null;
     }
 }

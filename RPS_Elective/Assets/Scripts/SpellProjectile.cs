@@ -6,7 +6,10 @@ public class SpellProjectile : MonoBehaviour
 {
     public string magicType = "empty";
     private int baseDamage = 10;
-   
+    //Delay to not shoot itself
+    private float collisionDetectionDelay = 0.05f; 
+    private float elapsedTime = 0f;
+
     void Start()
     {
         
@@ -15,8 +18,10 @@ public class SpellProjectile : MonoBehaviour
     void FixedUpdate()
     {
         transform.Translate(new Vector3(0f, 0f, 500 * Time.fixedDeltaTime), Space.Self);
+        transform.position = new Vector3(transform.position.x, 25f, transform.position.z);
         Destroy(gameObject, 2f);
-        
+        elapsedTime += Time.fixedDeltaTime;
+
     }
 
     public void SetColor(string magicType)
@@ -49,6 +54,8 @@ public class SpellProjectile : MonoBehaviour
     // Checking if the missile hits a wizard still tagged as boat
     void OnTriggerEnter(Collider other)
     {
+        if (elapsedTime < collisionDetectionDelay) return;
+
         if (other.CompareTag("Boat"))
         {
             PirateShipController targetShip = other.GetComponent<PirateShipController>();
