@@ -70,13 +70,13 @@ public class MushroomSpawner : MonoBehaviour
     {
         if (mushrooms.Count > 0)
         {
-            int randomIndex = Random.Range(0, mushrooms.Count); // Get a random index
+            int randomIndex = Random.Range(0, mushrooms.Count);
             GameObject mushroomToDestroy = mushrooms[randomIndex];
-            mushrooms.RemoveAt(randomIndex); // Remove from the list
+            mushrooms.RemoveAt(randomIndex); 
 
             if (mushroomToDestroy != null)
             {
-                 Destroy(mushroomToDestroy); // Destroy the mushroom GameObject
+                 Destroy(mushroomToDestroy); 
             }
         }
     }

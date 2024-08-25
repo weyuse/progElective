@@ -47,9 +47,9 @@ public class BaseAI : MonoBehaviour
     {
         yield return Ship.__Patrol();
     }
-    public IEnumerator SeekNewPosition(Transform target, float seekRadius)
+    public IEnumerator SeekNewPosition(Transform target, float seekRadius, float spaceGiven)
     {
-        yield return Ship.__SeekNewPosition(target, seekRadius);
+        yield return Ship.__SeekNewPosition(target, seekRadius, spaceGiven);
     }
 
     public virtual IEnumerator RunAI() 

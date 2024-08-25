@@ -9,9 +9,10 @@ public class PondAI : BaseAI
     private float healthThresholdMedium = 100;
     private string action;
     private Transform targetTransform;
-    public float seekRadius = 150f;
+    public float seekRadius;
     public float detectionAngle = 30f;
     public float detectionRange = 800f;
+    public float spaceGiven;
     
 
     private void Start()
@@ -121,8 +122,7 @@ public class PondAI : BaseAI
             {
                 case "engage":                    
                     yield return Engage(targetTransform);
-                    yield return SeekNewPosition(targetTransform, seekRadius);
-                    targetTransform = null;
+                    yield return SeekNewPosition(targetTransform, seekRadius, spaceGiven);
                     break;
 
                 case "flee":
@@ -198,6 +198,7 @@ public class PondAI : BaseAI
         if (health > healthThresholdMedium)
         {
             seekRadius = 100f; // Smaller radius, gets closer
+            spaceGiven = 20f;
             Debug.Log("High health detected, engaging with close seek radius.");
             return "engage";
         }
@@ -205,7 +206,8 @@ public class PondAI : BaseAI
         // Medium health wizards engage if they have an advantage or aren't at a disadvantage
         if (health > healthThresholdLow && health <= healthThresholdMedium)
         {
-            seekRadius = 150f; // Medium radius
+            seekRadius = 150f;
+            spaceGiven = 50f;// Medium radius
             if (IsAdvantageousMagic(myMagicType, enemyMagicType))
             {
                 Debug.Log("Medium health with magic advantage, engaging with medium seek radius.");
@@ -226,7 +228,8 @@ public class PondAI : BaseAI
         // Low health wizards engage only if they have an advantage, otherwise flee
         if (health <= healthThresholdLow)
         {
-            seekRadius = 200f; // Larger radius, keeps distance
+            seekRadius = 200f;
+            spaceGiven = 100f;// Larger radius, keeps distance
             if (IsAdvantageousMagic(myMagicType, enemyMagicType))
             {
                 Debug.Log("Low health with magic advantage, engaging with large seek radius.");

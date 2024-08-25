@@ -123,7 +123,7 @@ public class PirateShipController : MonoBehaviour
 
     //Moving after firing but keeping a certain distance depending on health
 
-    public IEnumerator __SeekNewPosition(Transform target, float seekRadius)
+    public IEnumerator __SeekNewPosition(Transform target, float seekRadius, float spaceGiven)
     {
         if (target == null)
         {
