@@ -35,6 +35,13 @@ public class PirateShipController : MonoBehaviour
     // Animation
     private Animator animator;
 
+    //Sound
+    private audioControl audioController;
+
+    //Overhead display
+    public Text healthText;
+    public Text magicText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +50,13 @@ public class PirateShipController : MonoBehaviour
         Debug.Log(currentMagicType);
         wizardMover = this.GetComponent<NavMeshAgent>();
         animator = this.GetComponent<Animator>();
+        GameObject audioManager = GameObject.Find("Audio Source");
+        if (audioManager != null)
+        {
+            audioController = audioManager.GetComponent<audioControl>();
+        }
+        UpdateHealthUI();
+        UpdateMagicText();
     }
 
     // Assigns the AI that steers this instance
@@ -70,7 +84,17 @@ public class PirateShipController : MonoBehaviour
             animator.SetBool("isMoving", false);
         }
     }
-    
+
+    private void UpdateHealthUI()
+    {
+        healthText.text = "Health: " + health;
+    }
+
+    private void UpdateMagicText()
+    {
+        magicText.text = "Magic: " + currentMagicType;
+    }
+
     private void SetDestination(Vector3 destination)
     {
         if (wizardMover != null)
@@ -106,6 +130,7 @@ public class PirateShipController : MonoBehaviour
     {
         health -= damage;
         animator.SetTrigger("tookDamage");
+        UpdateHealthUI();
         if (health <= 0)
         {
             Debug.Log("wizard dead");
@@ -200,6 +225,7 @@ public class PirateShipController : MonoBehaviour
         canCast = false;
         GameObject newInstance = Instantiate(magicSpellPrefab, ProjectileFrontSpawnPoint.position, ProjectileFrontSpawnPoint.rotation);
         animator.SetTrigger("makeAttack");
+        audioController.PlaySound(audioController.spellCasting);
         yield return new WaitForFixedUpdate();
         SpellProjectile spellProjectile = newInstance.GetComponent<SpellProjectile>();
 
@@ -344,6 +370,7 @@ public class PirateShipController : MonoBehaviour
                 this.GetComponent<PirateShipController>().currentMagicType = currentMagicType;
                 Debug.Log("Mushroom picked");
                 animator.SetTrigger("getMushroom");
+                UpdateMagicText();
                 Destroy(randomMushroomPoint);
             }
         }
