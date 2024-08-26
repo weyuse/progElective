@@ -11,15 +11,11 @@ public class MushroomSpawner : MonoBehaviour
     private PirateShipController shipController;
     private List<GameObject> mushrooms = new List<GameObject>();
     private int maxMushrooms = 4;
+    private CompetitionManager competitionManager;
 
     void Start()
     {
-        shipController = FindObjectOfType<PirateShipController>();
-        if (shipController == null)
-        {
-            Debug.LogError("PirateShipController not found in the scene.");
-            return;
-        }
+        competitionManager = FindObjectOfType<CompetitionManager>();
         timer = spawnInterval; 
     }
 
@@ -27,10 +23,7 @@ public class MushroomSpawner : MonoBehaviour
     {
         for (int i = 0; i < 30; i++)
         {
-            Vector3 randomPoint = new Vector3(
-                Random.Range(minBounds.x, maxBounds.x),
-                0f,
-                Random.Range(minBounds.z, maxBounds.z)
+            Vector3 randomPoint = new Vector3(Random.Range(minBounds.x, maxBounds.x),0f,Random.Range(minBounds.z, maxBounds.z)
             );
 
             if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 100f, NavMesh.AllAreas))
@@ -45,6 +38,17 @@ public class MushroomSpawner : MonoBehaviour
 
     void Update()
     {
+        if (!competitionManager.IsBattleStarted())
+        {
+            return;
+        }
+
+        shipController = FindObjectOfType<PirateShipController>();
+        if (shipController == null)
+        {
+            Debug.LogError("PirateShipController not found in the scene.");
+            return;
+        }
         timer += Time.deltaTime;
         mushrooms.RemoveAll(mushroom => mushroom == null);
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class CompetitionManager : MonoBehaviour
@@ -14,11 +15,31 @@ public class CompetitionManager : MonoBehaviour
     // the list that keeps track of all the participants
     private List<PirateShipController> pirateShips = new List<PirateShipController>();
 
-   
+    // button functionality
+    public Button StartRestartButton;
+    public Text ButtonText;
+    private bool battleStarted = false;
+
+
     void Start()
     {
-       
+        StartRestartButton.onClick.AddListener(OnStartRestartButtonClicked);
+        ButtonText.text = "Start";
+    }
+    public void OnStartRestartButtonClicked()
+    {
+        if (battleStarted)
+        {
+            RestartBattle();
+        }
+        else
+        {
+            StartBattle();
+        }
+    }
 
+    private void StartBattle()
+    {
         for (int i = 0; i < 4; i++)
         {
             GameObject pirateShip = Instantiate(PirateShipPrefab, SpawnPoints[i].position, SpawnPoints[i].rotation);
@@ -28,9 +49,30 @@ public class CompetitionManager : MonoBehaviour
             pirateShips.Add(pirateShipController);
         }
 
-        foreach(var pirateShip in pirateShips) {
+        foreach (var pirateShip in pirateShips)
+        {
             pirateShip.StartBattle();
         }
+
+        battleStarted = true;
+        ButtonText.text = "Restart";
+
+    }
+
+    private void RestartBattle()
+    {
+        foreach (var pirateShip in pirateShips)
+        {
+            Destroy(pirateShip.gameObject);
+        }
+        pirateShips.Clear();
+        battleStarted = false;
+        StartBattle();
+    }
+
+    public bool IsBattleStarted()
+    {
+        return battleStarted;
     }
 
     void Update()
