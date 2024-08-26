@@ -20,11 +20,19 @@ public class CompetitionManager : MonoBehaviour
     public Text ButtonText;
     private bool battleStarted = false;
 
+    private audioControl audioController;
+
 
     void Start()
     {
         StartRestartButton.onClick.AddListener(OnStartRestartButtonClicked);
         ButtonText.text = "Start";
+
+        GameObject audioManager = GameObject.Find("Audio Source");
+        if (audioManager != null)
+        {
+            audioController = audioManager.GetComponent<audioControl>();
+        }
     }
     public void OnStartRestartButtonClicked()
     {
@@ -54,6 +62,8 @@ public class CompetitionManager : MonoBehaviour
             pirateShip.StartBattle();
         }
 
+        audioController.PlaySound(audioController.backgroundMusic);
+
         battleStarted = true;
         ButtonText.text = "Restart";
 
@@ -66,6 +76,10 @@ public class CompetitionManager : MonoBehaviour
             Destroy(pirateShip.gameObject);
         }
         pirateShips.Clear();
+        if (audioController != null)
+        {
+            audioController.GetComponent<AudioSource>().Stop();
+        }
         battleStarted = false;
         StartBattle();
     }

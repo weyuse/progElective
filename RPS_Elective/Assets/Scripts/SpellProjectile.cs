@@ -9,10 +9,15 @@ public class SpellProjectile : MonoBehaviour
     //Delay to not shoot itself
     private float collisionDetectionDelay = 0.05f; 
     private float elapsedTime = 0f;
+    private audioControl audioController;
 
     void Start()
     {
-        
+        GameObject audioManager = GameObject.Find("Audio Source");
+        if (audioManager != null)
+        {
+            audioController = audioManager.GetComponent<audioControl>();
+        }
     }
        
     void FixedUpdate()
@@ -28,8 +33,6 @@ public class SpellProjectile : MonoBehaviour
     {
 
         this.magicType = magicType;
-        
-        //default colour SPELL AMERICAN
         Color color = Color.white;
 
 
@@ -48,9 +51,9 @@ public class SpellProjectile : MonoBehaviour
         }
 
         GetComponent<Renderer>().material.color = color;
+
     }
 
-  
     // Checking if the missile hits a wizard still tagged as boat
     void OnTriggerEnter(Collider other)
     {
@@ -76,13 +79,15 @@ public class SpellProjectile : MonoBehaviour
         //grabs the targets magic type
         string targetMagicType = target.GetCurrentMagicType();
         int damage = baseDamage;
-        
+        bool isCritHit = false;
+
         // fire magic
         if (magicType == "Fire")
         {
             if (targetMagicType == "Leaf")
             {
                 damage *= 2;
+                isCritHit = true;
             }
             else if (targetMagicType == "Water")
             {
@@ -95,6 +100,7 @@ public class SpellProjectile : MonoBehaviour
             if (targetMagicType == "Water")
             {
                 damage *= 2;
+                isCritHit = true;
             }
             else if (targetMagicType == "Fire")
             {
@@ -107,11 +113,21 @@ public class SpellProjectile : MonoBehaviour
             if (targetMagicType == "Fire")
             {
                 damage *= 2;
+                isCritHit = true;
             }
             else if (targetMagicType == "Leaf")
             {
                 damage /= 2;
             }
+        }
+
+        if (isCritHit == true)
+        {
+            audioController.PlaySound(audioController.critHitSound);
+        }
+        else
+        {
+            audioController.PlaySound(audioController.normalHitSound);
         }
 
         target.hit(damage);
